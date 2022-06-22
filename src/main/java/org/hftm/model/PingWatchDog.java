@@ -10,10 +10,9 @@ import javafx.beans.property.StringProperty;
 
 public class PingWatchDog extends AbstractWatchdog {
 
-    public PingWatchDog(IntegerProperty id, StringProperty service, IntegerProperty timeout, IntegerProperty heartbeat,
-            IntegerProperty retries) {
+    protected PingWatchDog(Integer id, String service, Integer timeout, Integer heartbeat, Integer retries) {
         super(id, service, timeout, heartbeat, retries);
-        
+        //TODO Auto-generated constructor stub
     }
 
     public void checkServiceAvailability() {
@@ -21,17 +20,17 @@ public class PingWatchDog extends AbstractWatchdog {
             // https://stackoverflow.com/questions/11506321/how-to-ping-an-ip-address
             // (...) A typical implementation will use ICMP ECHO REQUESTs if the privilege can be obtained, 
             // otherwise it will try to establish a TCP connection on port 7 (Echo) of the destination host
-            InetAddress address = InetAddress.getByName(this.service.get());
-            boolean reachable = address.isReachable(this.timeout.get());
+            InetAddress address = InetAddress.getByName(this.getServiceProperty().get());
+            boolean reachable = address.isReachable(this.getTimeoutProperty().get());
 
             if (reachable) {
-                this.currentStatus.set(ServiceStatus.UP);
+                setCurrentStatus(ServiceStatus.UP);
             } else {
-                this.currentStatus.set(ServiceStatus.DOWN);
+                setCurrentStatus(ServiceStatus.DOWN);
             }
             
         } catch (IOException error){
-            this.currentStatus.set(ServiceStatus.DOWN);
+            setCurrentStatus(ServiceStatus.DOWN);
         }
         
     }

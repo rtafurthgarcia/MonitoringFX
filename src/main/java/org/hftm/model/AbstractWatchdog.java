@@ -2,22 +2,24 @@ package org.hftm.model;
 
 import javafx.beans.property.*;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 import org.hftm.model.HistoryRecord;
+import org.hftm.model.HistoryRecord.ServiceStatus;
 
 public abstract class AbstractWatchdog {
 
-    protected IntegerProperty id;
-    protected StringProperty service;
-    protected ObjectProperty<HistoryRecord.ServiceStatus> currentStatus; 
-    protected BooleanProperty running;
-    protected IntegerProperty timeout;
-    protected IntegerProperty heartbeat;
-    protected IntegerProperty retries;
-    protected FloatProperty uptime20h;
-    protected FloatProperty uptime30d; 
+    private IntegerProperty id;
+    private StringProperty service;
+    private ObjectProperty<HistoryRecord.ServiceStatus> currentStatus;
+    private BooleanProperty running;
+    private IntegerProperty timeout;
+    private IntegerProperty heartbeat;
+    private IntegerProperty retries;
+    private FloatProperty uptime20h;
+    private FloatProperty uptime30d; 
     private LocalDateTime creationDateTime;
-    private List<HistoryRecord> monitoringHistory;
+    private LinkedList<HistoryRecord> monitoringHistory;
     
     public Integer getId() {
         return this.id.get();
@@ -87,20 +89,23 @@ public abstract class AbstractWatchdog {
         return creationDateTime;
     }
 
-    public List<HistoryRecord> getMonitoringHistoryProperty() {
+    public List<HistoryRecord> getMonitoringHistory() {
         return monitoringHistory;
     }
 
-    public AbstractWatchdog(IntegerProperty id, StringProperty service, IntegerProperty timeout, IntegerProperty heartbeat, IntegerProperty retries) {
-        this.id = id;
-        this.service = service;
-        this.timeout = timeout;
-        this.heartbeat = heartbeat;
-        this.retries = retries;
+    protected AbstractWatchdog(Integer id, String service, Integer timeout, Integer heartbeat, Integer retries) {
+        this.id = new SimpleIntegerProperty(id);
+        this.service = new SimpleStringProperty(service);
+        this.timeout = new SimpleIntegerProperty(timeout);
+        this.heartbeat = new SimpleIntegerProperty(heartbeat);
+        this.retries = new SimpleIntegerProperty(retries);
+        this.monitoringHistory = new LinkedList<HistoryRecord>(); 
 
         creationDateTime = LocalDateTime.now();
-        running.set(true);
-        currentStatus.set(HistoryRecord.ServiceStatus.CHECKING);
+        this.running = new SimpleBooleanProperty(true);
+        this.currentStatus = new SimpleObjectProperty<>();
+
+        this.setCurrentStatus(ServiceStatus.CHECKING);
     } 
 
     public abstract void checkServiceAvailability();

@@ -1,7 +1,6 @@
 package org.hftm.model;
 
 import java.time.LocalDateTime;
-import org.hftm.model.AbstractWatchdog;
 
 public class HistoryRecord {
     public enum ServiceStatus {

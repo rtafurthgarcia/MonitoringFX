@@ -87,7 +87,7 @@
                </font></Label>
             <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../res/011-cloud-computing-ok.png" />
+                  <Image url="@res/011-cloud-computing-ok.png" />
                </image>
                <VBox.margin>
                   <Insets bottom="10.0" left="10.0" top="10.0" />
@@ -169,7 +169,7 @@
                      <graphic>
                         <ImageView fx:id="buttonAdd" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../res/002-plus.png" />
+                              <Image url="@res/002-plus.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -178,7 +178,7 @@
                      <graphic>
                         <ImageView fx:id="buttonEdit" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../res/006-pencil.png" />
+                              <Image url="@res/006-pencil.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -187,7 +187,7 @@
                      <graphic>
                         <ImageView fx:id="buttonDelete" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../res/013-trash.png" />
+                              <Image url="@res/013-trash.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -196,7 +196,7 @@
                      <graphic>
                         <ImageView fx:id="buttonStartPause" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../res/014-double-chevron.png" />
+                              <Image url="@res/014-double-chevron.png" />
                            </image>
                         </ImageView>
                      </graphic>

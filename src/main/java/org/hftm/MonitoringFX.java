@@ -21,7 +21,7 @@ public class MonitoringFX extends Application {
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("JavaFX App");
+        this.primaryStage.setTitle("MonitoringFX");
         this.showMainView();
     }
 

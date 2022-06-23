@@ -1,9 +1,12 @@
 package org.hftm.model;
 
+import java.lang.module.ResolutionException;
+import java.net.ConnectException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.net.http.HttpClient.Redirect;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 
@@ -22,16 +25,26 @@ public class HTTPWatchDog extends AbstractWatchdog {
 
         for (Integer count = getRetriesProperty().get(); count > 0; count--) {
 
-            HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofMillis(getTimeout())).build();
-            HttpRequest request = HttpRequest.newBuilder().uri(URI.create(getService())).build();
+            HttpClient client = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofMillis(getTimeout()))
+                .followRedirects(Redirect.NORMAL)
+                .build();
+            HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(getService()))
+                .build();
 
-            HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
-            if (response.statusCode() >= 200 && response.statusCode() <= 299) {
-                isReachable = true;
-                break;
-            } else {
+            try {
+                HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+                if (response.statusCode() >= 200 && response.statusCode() <= 299) {
+                    isReachable = true;
+                    break;
+                } else {
+                    isReachable = false;
+                }   
+            } catch (ConnectException e) {
+                // when the host doesnt exist for example or when it cannot resolve
                 isReachable = false;
-            }
+            } 
         }
 
         if (isReachable) {

@@ -1,8 +1,5 @@
 package org.hftm.model;
 
-import org.hftm.model.PingWatchDog;
-import org.hftm.model.HistoryRecord;
-
 import java.net.UnknownHostException;
 
 import static org.junit.jupiter.api.Assertions.*;

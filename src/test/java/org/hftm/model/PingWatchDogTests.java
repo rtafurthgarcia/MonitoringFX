@@ -3,6 +3,8 @@ package org.hftm.model;
 import org.hftm.model.PingWatchDog;
 import org.hftm.model.HistoryRecord;
 
+import java.net.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +14,7 @@ import org.junit.jupiter.api.Test;
 public class PingWatchDogTests {
 
     @Test
-    void checkIfLocalHostWorks() {
+    void checkGeneralServices() throws Exception {
         PingWatchDog watchDog = new PingWatchDog(1, "127.0.0.1", 3000, 3, 3);
         assertEquals(HistoryRecord.ServiceStatus.CHECKING, watchDog.getCurrentStatus());
 
@@ -20,5 +22,43 @@ public class PingWatchDogTests {
         assertEquals(HistoryRecord.ServiceStatus.UP, watchDog.getCurrentStatus());
 
         assertEquals(2, watchDog.getMonitoringHistory().size());
+
+        watchDog.setService("1.1.1.1");
+        assertEquals(HistoryRecord.ServiceStatus.CHECKING, watchDog.getCurrentStatus());
+
+        watchDog.checkServiceAvailability();
+        assertEquals(HistoryRecord.ServiceStatus.UP, watchDog.getCurrentStatus());
+
+        assertEquals(4, watchDog.getMonitoringHistory().size());
+
+        watchDog.setService("hftm.ch");
+        assertEquals(HistoryRecord.ServiceStatus.CHECKING, watchDog.getCurrentStatus());
+
+        watchDog.checkServiceAvailability();
+        assertEquals(HistoryRecord.ServiceStatus.UP, watchDog.getCurrentStatus());
+
+        assertEquals(6, watchDog.getMonitoringHistory().size());
+    };
+
+    @Test
+    void checkImpossibleAddress() {
+        PingWatchDog watchDog = new PingWatchDog(1, "999.999.999.999", 3000, 3, 3);
+        assertEquals(HistoryRecord.ServiceStatus.CHECKING, watchDog.getCurrentStatus());
+
+        assertThrows(UnknownHostException.class, () -> {
+            watchDog.checkServiceAvailability();
+        });
+
+        assertEquals(1, watchDog.getMonitoringHistory().size());
+
+        watchDog.setService("does.not.resolve");
+        assertEquals(HistoryRecord.ServiceStatus.CHECKING, watchDog.getCurrentStatus());
+
+        assertThrows(UnknownHostException.class, () -> {
+            watchDog.checkServiceAvailability();
+        });
+
+        assertEquals(2, watchDog.getMonitoringHistory().size());
+
     };
 }

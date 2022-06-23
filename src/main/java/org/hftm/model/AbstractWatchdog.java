@@ -1,10 +1,11 @@
 package org.hftm.model;
 
 import javafx.beans.property.*;
+
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
-import org.hftm.model.HistoryRecord;
 import org.hftm.model.HistoryRecord.ServiceStatus;
 
 public abstract class AbstractWatchdog {
@@ -35,6 +36,8 @@ public abstract class AbstractWatchdog {
 
     public void setService(String newService) {
         service.set(newService);
+
+        setCurrentStatus(ServiceStatus.CHECKING);
     }
 
     public HistoryRecord.ServiceStatus getCurrentStatus() {
@@ -47,6 +50,46 @@ public abstract class AbstractWatchdog {
         HistoryRecord newRecord = new HistoryRecord(LocalDateTime.now(), newCurrentStatus); 
 
         monitoringHistory.add(newRecord);
+    }
+
+    public Boolean getRunning() {
+        return running.get();
+    }
+
+    public void setRunning(boolean newValue) {
+        running.set(newValue);
+    }
+
+    public Integer getTimeout() {
+        return timeout.get();
+    }
+
+    public void setTimeout(Integer newValue) {
+        timeout.set(newValue);
+    }
+
+    public Integer getHeartbeat() {
+        return heartbeat.get();
+    }
+
+    public void setHeartbear(Integer newValue) {
+        heartbeat.set(newValue);
+    }
+
+    public Integer getRetries() {
+        return retries.get();
+    }
+
+    public void setRetries(Integer newValue) {
+        retries.set(newValue);
+    }
+
+    public Float getUptime20h() {
+        return uptime20h.get();
+    }
+
+    public Float getUptime30d() {
+        return uptime30d.get();
     }
 
     public IntegerProperty getIdProperty() {
@@ -108,7 +151,7 @@ public abstract class AbstractWatchdog {
         this.setCurrentStatus(ServiceStatus.CHECKING);
     } 
 
-    public abstract void checkServiceAvailability();
+    public abstract void checkServiceAvailability() throws Exception;
 
     @Override
     public int hashCode() {

@@ -1,9 +1,6 @@
 package org.hftm.model;
 
-import java.io.IOException;
 import java.net.InetAddress;
-
-import javax.net.ssl.HostnameVerifier;
 
 import org.hftm.model.HistoryRecord.ServiceStatus;
 

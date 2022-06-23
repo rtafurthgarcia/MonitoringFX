@@ -37,7 +37,7 @@ public abstract class AbstractWatchdog {
     public void setService(String newService) {
         service.set(newService);
 
-        setCurrentStatus(ServiceStatus.CHECKING);
+        setCurrentStatus(ServiceStatus.UNKNOWN);
     }
 
     public HistoryRecord.ServiceStatus getCurrentStatus() {
@@ -148,7 +148,7 @@ public abstract class AbstractWatchdog {
         this.running = new SimpleBooleanProperty(true);
         this.currentStatus = new SimpleObjectProperty<>();
 
-        this.setCurrentStatus(ServiceStatus.CHECKING);
+        this.setCurrentStatus(ServiceStatus.UNKNOWN);
     } 
 
     public abstract void checkServiceAvailability() throws Exception;

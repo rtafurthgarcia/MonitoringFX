@@ -1,6 +1,5 @@
 package org.hftm.model;
 
-import java.lang.module.ModuleDescriptor.Builder;
 import java.net.ConnectException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -13,30 +12,36 @@ import java.time.Duration;
 
 import org.hftm.model.HistoryRecord.ServiceStatus;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener.Change;
 
 public class HTTPWatchDog extends AbstractWatchdog {
 
-    /**public enum RequestType {
+    public enum RequestType {
         GET,
-        POST,
         PUT,
+        POST,
         DELETE,
-    }**/
+        CONNECT,
+        HEAD,
+        OPTIONS
+    }
 
-    private StringProperty requestType;
+    private ObjectProperty<RequestType> requestType;
     private StringProperty headers;
     private StringProperty body;
 
-    public String getRequestType() {
+    public RequestType getRequestType() {
         return requestType.get();
     }
 
-    public void setRequestType(String requestType) {
+    public void setRequestType(RequestType requestType) {
         this.requestType.set(requestType);
-
-        generateBuilder();
     }
 
     public String getHeaders() {
@@ -45,8 +50,6 @@ public class HTTPWatchDog extends AbstractWatchdog {
 
     public void setHeaders(String headers) {
         this.headers.set(headers);
-
-        generateBuilder();
     }
 
     public String getBody() {
@@ -55,8 +58,6 @@ public class HTTPWatchDog extends AbstractWatchdog {
 
     public void setBody(String body) {
         this.body.set(body);
-
-        generateBuilder();
     }
 
     public StringProperty getHeadersProperty() {
@@ -67,9 +68,12 @@ public class HTTPWatchDog extends AbstractWatchdog {
         return body;
     }
 
-    public StringProperty getRequestTypeProperty() {
+    public ObjectProperty<RequestType> getRequestTypeProperty() {
         return requestType;
     }
+
+    ChangeListener<String> propertyChangedListener = (observable, oldValue, newValue) -> generateBuilder();
+    ChangeListener<RequestType> requestTypeChangedListener = (observable, oldValue, newValue) -> generateBuilder();
 
     private HttpClient client;
     private HttpRequest.Builder builder;
@@ -77,15 +81,14 @@ public class HTTPWatchDog extends AbstractWatchdog {
     private void generateBuilder() {
         builder = HttpRequest.newBuilder();
         builder = builder.uri(URI.create(getService()));
-        if (! getHeaders().equals("")) {
+        if (! getHeaders().isEmpty()) {
             builder = builder.headers(getHeaders());
         }
-        builder.method(getRequestType(), BodyPublishers.ofString(getBody()));
+        builder.method(getRequestType().name(), BodyPublishers.ofString(getBody()));
     }
 
     protected HTTPWatchDog(Integer id, String service, Integer timeout, Integer heartbeat, Integer retries) {
         super(id, service, timeout, heartbeat, retries);
-        // TODO Auto-generated constructor stub
 
         client = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofMillis(getTimeout()))
@@ -94,23 +97,22 @@ public class HTTPWatchDog extends AbstractWatchdog {
         
         this.body = new SimpleStringProperty("");
         this.headers = new SimpleStringProperty("");
-        this.requestType = new SimpleStringProperty("GET");
+        this.requestType = new SimpleObjectProperty<>(RequestType.GET);
 
-        generateBuilder();
+        this.getServiceProperty().addListener(propertyChangedListener);
+        this.body.addListener(propertyChangedListener);
+        this.headers.addListener(propertyChangedListener);
+        this.requestType.addListener(requestTypeChangedListener);
     }
 
-    protected HTTPWatchDog(Integer id, String service, String type, String headers, String body) {
-        super(id, service);
+    protected HTTPWatchDog(Integer id, String service, RequestType type, String headers, String body) {
+        this(id, service, DEFAULT_TIMEOUT, DEFAULT_HEARTBEAT, DEFAULT_RETRIES);
 
-        client = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofMillis(getTimeout()))
-                .followRedirects(Redirect.NORMAL)
-                .build();
+        this.body.set(body);
+        this.headers.set(headers);
+        this.requestType.set(type);
 
-        this.body = new SimpleStringProperty(body);
-        this.headers = new SimpleStringProperty(headers);
-        this.requestType = new SimpleStringProperty(type);
-
+        // have to trigger it manually in case all values are default -> changelistener is never triggered if values do not change!!!
         generateBuilder();
     }
 

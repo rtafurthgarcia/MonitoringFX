@@ -10,9 +10,9 @@ import org.hftm.model.HistoryRecord.ServiceStatus;
 public abstract class AbstractWatchdog {
 
     //in milliseconds !
-    private final Integer DEFAULT_TIMEOUT = 2000;
-    private final Integer DEFAULT_RETRIES = 3;
-    private final Integer DEFAULT_HEARTBEAT = 3000;
+    protected static final Integer DEFAULT_TIMEOUT = 2000;
+    protected static final Integer DEFAULT_RETRIES = 3;
+    protected static final Integer DEFAULT_HEARTBEAT = 3000;
 
     private IntegerProperty id;
     private StringProperty service;
@@ -156,18 +156,7 @@ public abstract class AbstractWatchdog {
     } 
 
     protected AbstractWatchdog(Integer id, String service) {
-        this.id = new SimpleIntegerProperty(id);
-        this.service = new SimpleStringProperty(service);
-        this.timeout = new SimpleIntegerProperty(DEFAULT_TIMEOUT);
-        this.heartbeat = new SimpleIntegerProperty(DEFAULT_HEARTBEAT);
-        this.retries = new SimpleIntegerProperty(DEFAULT_RETRIES);
-        this.monitoringHistory = new LinkedList<HistoryRecord>(); 
-
-        creationDateTime = LocalDateTime.now();
-        this.running = new SimpleBooleanProperty(true);
-        this.currentStatus = new SimpleObjectProperty<>();
-
-        this.setCurrentStatus(ServiceStatus.UNKNOWN);
+        this(id, service, DEFAULT_TIMEOUT, DEFAULT_HEARTBEAT, DEFAULT_RETRIES);
     }
 
     public abstract void checkServiceAvailability() throws Exception;

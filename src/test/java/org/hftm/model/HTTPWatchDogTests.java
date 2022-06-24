@@ -2,14 +2,12 @@ package org.hftm.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.IOException;
-
 import org.junit.jupiter.api.Test;
 
 public class HTTPWatchDogTests {
 	@Test
     void CheckBasicSites() throws Exception {
-        HTTPWatchDog watchDog = new HTTPWatchDog(1, "https://www.hftm.ch", "GET", "", "");
+        HTTPWatchDog watchDog = new HTTPWatchDog(1, "https://www.hftm.ch", HTTPWatchDog.RequestType.GET, "", "");
         assertEquals(HistoryRecord.ServiceStatus.UNKNOWN, watchDog.getCurrentStatus());
 
         watchDog.checkServiceAvailability();
@@ -20,7 +18,7 @@ public class HTTPWatchDogTests {
     
     @Test
     void CheckUnaccessibleWebsites() throws Exception {
-        HTTPWatchDog watchDog = new HTTPWatchDog(1, "https://does.not.exist.google.com", "GET", "", "");
+        HTTPWatchDog watchDog = new HTTPWatchDog(1, "https://does.not.exist.google.com", HTTPWatchDog.RequestType.GET, "", "");
         assertEquals(HistoryRecord.ServiceStatus.UNKNOWN, watchDog.getCurrentStatus());
 
         watchDog.checkServiceAvailability();

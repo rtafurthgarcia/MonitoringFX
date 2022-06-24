@@ -7,22 +7,22 @@ import java.util.LinkedList;
 import java.util.List;
 import org.hftm.model.HistoryRecord.ServiceStatus;
 
-public abstract class AbstractWatchdog {
+public abstract class AbstractWatchDog {
 
     //in milliseconds !
     protected static final Integer DEFAULT_TIMEOUT = 2000;
     protected static final Integer DEFAULT_RETRIES = 3;
     protected static final Integer DEFAULT_HEARTBEAT = 3000;
 
-    private IntegerProperty id;
-    private StringProperty service;
-    private ObjectProperty<HistoryRecord.ServiceStatus> currentStatus;
-    private BooleanProperty running;
-    private IntegerProperty timeout;
-    private IntegerProperty heartbeat;
-    private IntegerProperty retries;
-    private FloatProperty uptime20h;
-    private FloatProperty uptime30d; 
+    private SimpleIntegerProperty id;
+    private SimpleStringProperty service;
+    private SimpleObjectProperty<HistoryRecord.ServiceStatus> currentStatus;
+    private SimpleBooleanProperty running;
+    private SimpleIntegerProperty timeout;
+    private SimpleIntegerProperty heartbeat;
+    private SimpleIntegerProperty retries;
+    private SimpleFloatProperty uptime20h;
+    private SimpleFloatProperty uptime30d; 
     private LocalDateTime creationDateTime;
     private LinkedList<HistoryRecord> monitoringHistory;
     
@@ -96,10 +96,10 @@ public abstract class AbstractWatchdog {
         return uptime30d.get();
     }
 
-    public IntegerProperty getIdProperty() {
+    public SimpleIntegerProperty getIdProperty() {
         return id;
     }
-    public StringProperty getServiceProperty() {
+    public SimpleStringProperty getServiceProperty() {
         return service;
     }
     
@@ -107,28 +107,28 @@ public abstract class AbstractWatchdog {
         return currentStatus;
     }
     
-    public BooleanProperty getRunningProperty() {
+    public SimpleBooleanProperty getRunningProperty() {
         return running;
     }
 
-    public IntegerProperty getTimeoutProperty() {
+    public SimpleIntegerProperty getTimeoutProperty() {
         return timeout;
     }
 
-    public IntegerProperty getHeartbeatProperty() {
+    public SimpleIntegerProperty getHeartbeatProperty() {
         return heartbeat;
     }
 
-    public IntegerProperty getRetriesProperty() {
+    public SimpleIntegerProperty getRetriesProperty() {
         return retries;
     }
 
-    public FloatProperty getUptime20hProperty() {
+    public SimpleFloatProperty getUptime20hProperty() {
         return uptime20h;
     }
 
 
-    public FloatProperty getUptime30dProperty() {
+    public SimpleFloatProperty getUptime30dProperty() {
         return uptime30d;
     }
 
@@ -140,7 +140,7 @@ public abstract class AbstractWatchdog {
         return monitoringHistory;
     }
 
-    protected AbstractWatchdog(Integer id, String service, Integer timeout, Integer heartbeat, Integer retries) {
+    protected AbstractWatchDog(Integer id, String service, Integer timeout, Integer heartbeat, Integer retries) {
         this.id = new SimpleIntegerProperty(id);
         this.service = new SimpleStringProperty(service);
         this.timeout = new SimpleIntegerProperty(timeout);
@@ -155,7 +155,7 @@ public abstract class AbstractWatchdog {
         this.setCurrentStatus(ServiceStatus.UNKNOWN);
     } 
 
-    protected AbstractWatchdog(Integer id, String service) {
+    protected AbstractWatchDog(Integer id, String service) {
         this(id, service, DEFAULT_TIMEOUT, DEFAULT_HEARTBEAT, DEFAULT_RETRIES);
     }
 
@@ -186,7 +186,7 @@ public abstract class AbstractWatchdog {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        AbstractWatchdog other = (AbstractWatchdog) obj;
+        AbstractWatchDog other = (AbstractWatchDog) obj;
         if (heartbeat == null) {
             if (other.heartbeat != null)
                 return false;

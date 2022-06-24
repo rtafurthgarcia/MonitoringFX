@@ -10,7 +10,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-public class NameResolutionWatchDog extends AbstractWatchdog {
+public class DNSRecordWatchDog extends AbstractWatchDog {
 
     private ObjectProperty<SimpleResolver> resolver;
     private SimpleIntegerProperty recordType;
@@ -40,7 +40,7 @@ public class NameResolutionWatchDog extends AbstractWatchdog {
         return recordType;
     }
 
-    public NameResolutionWatchDog(Integer id, String service, Integer timeout, Integer heartbeat, Integer retries) throws UnknownHostException {
+    public DNSRecordWatchDog(Integer id, String service, Integer timeout, Integer heartbeat, Integer retries) throws UnknownHostException {
         super(id, service, timeout, heartbeat, retries);
         // TODO Auto-generated constructor stub
 
@@ -48,7 +48,7 @@ public class NameResolutionWatchDog extends AbstractWatchdog {
         this.recordType = new SimpleIntegerProperty(Type.ANY);
     }
 
-    public NameResolutionWatchDog(Integer id, String service, Integer recordType, SimpleResolver resolver) throws UnknownHostException {
+    public DNSRecordWatchDog(Integer id, String service, Integer recordType, SimpleResolver resolver) throws UnknownHostException {
         this(id, service, DEFAULT_TIMEOUT, DEFAULT_HEARTBEAT, DEFAULT_RETRIES);
 
         this.recordType.set(recordType);

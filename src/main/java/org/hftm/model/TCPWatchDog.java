@@ -12,7 +12,7 @@ import org.hftm.model.HistoryRecord.ServiceStatus;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
-public class TCPWatchDog extends AbstractWatchdog {
+public class TCPWatchDog extends AbstractWatchDog {
 
     private IntegerProperty port;
 

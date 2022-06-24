@@ -21,7 +21,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener.Change;
 
-public class HTTPWatchDog extends AbstractWatchdog {
+public class HTTPWatchDog extends AbstractWatchDog {
 
     public enum RequestType {
         GET,
@@ -88,7 +88,7 @@ public class HTTPWatchDog extends AbstractWatchdog {
         builder.method(getRequestType().name(), BodyPublishers.ofString(getBody()));
     }
 
-    protected HTTPWatchDog(Integer id, String service, Integer timeout, Integer heartbeat, Integer retries) {
+    public HTTPWatchDog(Integer id, String service, Integer timeout, Integer heartbeat, Integer retries) {
         super(id, service, timeout, heartbeat, retries);
 
         client = HttpClient.newBuilder()
@@ -106,7 +106,7 @@ public class HTTPWatchDog extends AbstractWatchdog {
         this.requestType.addListener(requestTypeChangedListener);
     }
 
-    protected HTTPWatchDog(Integer id, String service, RequestType type, String headers, String body) {
+    public HTTPWatchDog(Integer id, String service, RequestType type, String headers, String body) {
         this(id, service, DEFAULT_TIMEOUT, DEFAULT_HEARTBEAT, DEFAULT_RETRIES);
 
         this.body.set(body);

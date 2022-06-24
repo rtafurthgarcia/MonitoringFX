@@ -9,14 +9,14 @@ import org.hftm.model.HistoryRecord.ServiceStatus;
 import org.hftm.util.OsDetectionUtil;
 import org.hftm.util.OsDetectionUtil.OperatingSystemType;;
 
-public class PingWatchDog extends AbstractWatchdog {
+public class PingWatchDog extends AbstractWatchDog {
 
-    protected PingWatchDog(Integer id, String service, Integer timeout, Integer heartbeat, Integer retries) {
+    public PingWatchDog(Integer id, String service, Integer timeout, Integer heartbeat, Integer retries) {
         super(id, service, timeout, heartbeat, retries);
         //TODO Auto-generated constructor stub
     } 
 
-    protected PingWatchDog(Integer id, String service) {
+    public PingWatchDog(Integer id, String service) {
         super(id, service);
     }
 

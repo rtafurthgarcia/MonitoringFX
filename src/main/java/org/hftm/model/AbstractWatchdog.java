@@ -2,13 +2,17 @@ package org.hftm.model;
 
 import javafx.beans.property.*;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import org.hftm.model.HistoryRecord.ServiceStatus;
 
 public abstract class AbstractWatchdog {
+
+    //in milliseconds !
+    private final Integer DEFAULT_TIMEOUT = 2000;
+    private final Integer DEFAULT_RETRIES = 3;
+    private final Integer DEFAULT_HEARTBEAT = 3000;
 
     private IntegerProperty id;
     private StringProperty service;
@@ -151,7 +155,27 @@ public abstract class AbstractWatchdog {
         this.setCurrentStatus(ServiceStatus.UNKNOWN);
     } 
 
+    protected AbstractWatchdog(Integer id, String service) {
+        this.id = new SimpleIntegerProperty(id);
+        this.service = new SimpleStringProperty(service);
+        this.timeout = new SimpleIntegerProperty(DEFAULT_TIMEOUT);
+        this.heartbeat = new SimpleIntegerProperty(DEFAULT_HEARTBEAT);
+        this.retries = new SimpleIntegerProperty(DEFAULT_RETRIES);
+        this.monitoringHistory = new LinkedList<HistoryRecord>(); 
+
+        creationDateTime = LocalDateTime.now();
+        this.running = new SimpleBooleanProperty(true);
+        this.currentStatus = new SimpleObjectProperty<>();
+
+        this.setCurrentStatus(ServiceStatus.UNKNOWN);
+    }
+
     public abstract void checkServiceAvailability() throws Exception;
+
+    @Override
+    public String toString() {
+        return getService();
+    }
 
     @Override
     public int hashCode() {

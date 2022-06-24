@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 public class HTTPWatchDogTests {
 	@Test
     void CheckBasicSites() throws Exception {
-        HTTPWatchDog watchDog = new HTTPWatchDog(1, "https://www.hftm.ch", 2000, 3, 3);
+        HTTPWatchDog watchDog = new HTTPWatchDog(1, "https://www.hftm.ch", "GET", "", "");
         assertEquals(HistoryRecord.ServiceStatus.UNKNOWN, watchDog.getCurrentStatus());
 
         watchDog.checkServiceAvailability();
@@ -20,7 +20,7 @@ public class HTTPWatchDogTests {
     
     @Test
     void CheckUnaccessibleWebsites() throws Exception {
-        HTTPWatchDog watchDog = new HTTPWatchDog(1, "https://does.not.exist.google.com", 2000, 3, 3);
+        HTTPWatchDog watchDog = new HTTPWatchDog(1, "https://does.not.exist.google.com", "GET", "", "");
         assertEquals(HistoryRecord.ServiceStatus.UNKNOWN, watchDog.getCurrentStatus());
 
         watchDog.checkServiceAvailability();

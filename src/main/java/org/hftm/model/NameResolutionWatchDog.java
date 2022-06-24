@@ -67,6 +67,7 @@ public class NameResolutionWatchDog extends AbstractWatchdog {
             Record[] records = lookup.run();
             if (records != null) {
                 isReachable = true;
+                break;
             } else {
                 isReachable = false;
             }

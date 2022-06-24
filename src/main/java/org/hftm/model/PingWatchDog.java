@@ -1,6 +1,8 @@
 package org.hftm.model;
 
+import java.io.IOException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import org.hftm.model.HistoryRecord.ServiceStatus;
 
@@ -22,7 +24,7 @@ public class PingWatchDog extends AbstractWatchdog {
         https://docs.oracle.com/javase/7/docs/api/java/net/InetAddress.html#isReachable%28int%29
         hence why I had to rely on the host OS toolset to ping my hosts
     */
-    public void checkServiceAvailability() throws Exception {
+    public void checkServiceAvailability() throws IOException, InterruptedException {
         String pingCmd;
         boolean isReachable = false;
         OperatingSystemType operatingSystemType = OsDetectionUtil.getOperatingSystemType();

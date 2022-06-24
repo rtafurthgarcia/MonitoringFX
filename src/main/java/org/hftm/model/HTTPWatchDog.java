@@ -1,5 +1,6 @@
 package org.hftm.model;
 
+import java.io.IOException;
 import java.net.ConnectException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -117,7 +118,7 @@ public class HTTPWatchDog extends AbstractWatchdog {
     }
 
     @Override
-    public void checkServiceAvailability() throws Exception {
+    public void checkServiceAvailability() throws IOException, InterruptedException {
         boolean isReachable = false;
 
         for (Integer count = getRetriesProperty().get(); count > 0; count--) {

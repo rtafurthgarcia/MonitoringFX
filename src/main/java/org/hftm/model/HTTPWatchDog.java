@@ -102,6 +102,8 @@ public class HTTPWatchDog extends AbstractWatchDog {
         this.body.addListener(propertyChangedListener);
         this.headers.addListener(propertyChangedListener);
         this.requestType.addListener(requestTypeChangedListener);
+
+        setTypeProperty();
     }
 
     public HTTPWatchDog(Integer id, String service, RequestType type, String headers, String body) {

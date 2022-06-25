@@ -33,6 +33,7 @@ public class TCPWatchDog extends AbstractWatchDog {
         super(id, service, DEFAULT_TIMEOUT, DEFAULT_HEARTBEAT, DEFAULT_RETRIES);
 
         this.port = new SimpleIntegerProperty(port);
+        setTypeProperty();
     }
 
     @Override

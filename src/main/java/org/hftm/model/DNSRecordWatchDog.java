@@ -48,6 +48,7 @@ public class DNSRecordWatchDog extends AbstractWatchDog {
 
         this.resolver = new SimpleObjectProperty<>(new SimpleResolver("1.1.1.1"));
         this.recordType = new SimpleIntegerProperty(Type.ANY);
+        setTypeProperty();
     }
 
     public DNSRecordWatchDog(Integer id, String service, Integer recordType, SimpleResolver resolver) throws UnknownHostException {

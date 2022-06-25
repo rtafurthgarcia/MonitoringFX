@@ -213,7 +213,7 @@
               <columns>
                 <TableColumn id="idColumn" fx:id="idColumn" maxWidth="20.0" minWidth="20.0" prefWidth="20.0" text="#" />
                 <TableColumn id="serviceColumn" fx:id="serviceColumn" maxWidth="1.7976931348623157E308" minWidth="150.0" prefWidth="-1.0" text="Service" />
-                  <TableColumn id="typeColumn" fx:id="typeColumn" maxWidth="75.0" minWidth="75.0" prefWidth="75.0" text="Type" />
+                  <TableColumn id="typeColumn" fx:id="typeColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Type" />
                   <TableColumn id="statusColumn" fx:id="statusColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Status" />
                   <TableColumn id="heartbeatColumn" fx:id="heartbeatColumn" maxWidth="1.7976931348623157E308" minWidth="50.0" prefWidth="75.0" text="Ref." />
               </columns>

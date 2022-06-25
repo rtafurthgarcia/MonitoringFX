@@ -14,11 +14,11 @@ public class PingWatchDog extends AbstractWatchDog {
 
     public PingWatchDog(Integer id, String service, Integer timeout, Integer heartbeat, Integer retries) {
         super(id, service, timeout, heartbeat, retries);
-        //TODO Auto-generated constructor stub
+        setTypeProperty();
     } 
 
     public PingWatchDog(Integer id, String service) {
-        super(id, service);
+        this(id, service, DEFAULT_TIMEOUT, DEFAULT_HEARTBEAT, DEFAULT_RETRIES);
     }
 
     /*  the classical isReachable method doesnt work -> relies on admin priviledges to access raw IP sockets to execute our ICMP request

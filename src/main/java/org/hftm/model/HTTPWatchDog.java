@@ -3,13 +3,14 @@ package org.hftm.model;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpClient.Redirect;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
-import java.time.Duration;
+import javafx.util.Duration;
 
 import org.hftm.model.HistoryRecord.ServiceStatus;
 
@@ -86,11 +87,11 @@ public class HTTPWatchDog extends AbstractWatchDog {
         builder.method(getRequestType().name(), BodyPublishers.ofString(getBody()));
     }
 
-    public HTTPWatchDog(Integer id, String service, Integer timeout, Integer heartbeat, Integer retries) {
-        super(id, service, timeout, heartbeat, retries);
+    public HTTPWatchDog(Integer id, String service, Integer timeout, Duration period, Integer maxFailures) throws UnknownHostException {
+        super(id, service, timeout, period, maxFailures);
 
         client = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofMillis(getTimeout()))
+                .connectTimeout(java.time.Duration.ofMillis(getTimeout()))
                 .followRedirects(Redirect.NORMAL)
                 .build();
         
@@ -106,8 +107,8 @@ public class HTTPWatchDog extends AbstractWatchDog {
         setTypeProperty();
     }
 
-    public HTTPWatchDog(Integer id, String service, RequestType type, String headers, String body) {
-        this(id, service, DEFAULT_TIMEOUT, DEFAULT_HEARTBEAT, DEFAULT_RETRIES);
+    public HTTPWatchDog(Integer id, String service, RequestType type, String headers, String body) throws UnknownHostException {
+        this(id, service, DEFAULT_TIMEOUT, DEFAULT_PERIOD, DEFAULT_MAX_FAILURE);
 
         this.body.set(body);
         this.headers.set(headers);
@@ -121,7 +122,7 @@ public class HTTPWatchDog extends AbstractWatchDog {
     public void checkServiceAvailability() throws IOException, InterruptedException {
         boolean isReachable = false;
 
-        for (Integer count = getRetries(); count > 0; count--) {
+        for (Integer count = getMaximumFailureCount(); count > 0; count--) {
             HttpRequest request = builder.build();
 
             try {

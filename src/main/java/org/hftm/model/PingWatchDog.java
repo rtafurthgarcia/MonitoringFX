@@ -8,17 +8,18 @@ import org.hftm.model.HistoryRecord.ServiceStatus;
 import org.hftm.util.OsDetectionUtil;
 import org.hftm.util.OsDetectionUtil.OperatingSystemType;
 
-import javafx.beans.property.SimpleStringProperty;;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.util.Duration;;
 
 public class PingWatchDog extends AbstractWatchDog {
 
-    public PingWatchDog(Integer id, String service, Integer timeout, Integer heartbeat, Integer retries) {
-        super(id, service, timeout, heartbeat, retries);
+    public PingWatchDog(Integer id, String service, Integer timeout, Duration period, Integer maxFailures) {
+        super(id, service, timeout, period, maxFailures);
         setTypeProperty();
     } 
 
     public PingWatchDog(Integer id, String service) {
-        this(id, service, DEFAULT_TIMEOUT, DEFAULT_HEARTBEAT, DEFAULT_RETRIES);
+        this(id, service, DEFAULT_TIMEOUT, DEFAULT_PERIOD, DEFAULT_MAX_FAILURE);
     }
 
     /*  the classical isReachable method doesnt work -> relies on admin priviledges to access raw IP sockets to execute our ICMP request
@@ -39,7 +40,7 @@ public class PingWatchDog extends AbstractWatchDog {
             pingCmd = String.format("ping -c 1 -W %d %s", getTimeout(), getService());
         }
 
-        for (Integer count = getRetries(); count > 0; count--) {
+        for (Integer count = getMaximumFailureCount(); count > 0; count--) {
             Runtime run  = Runtime.getRuntime();
             Process process = run.exec(pingCmd);
 

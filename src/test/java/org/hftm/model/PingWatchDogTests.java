@@ -12,7 +12,7 @@ public class PingWatchDogTests {
 
     @Test
     void checkGeneralServices() throws Exception {
-        PingWatchDog watchDog = new PingWatchDog(1, "127.0.0.1", 3000, 3, 3);
+        PingWatchDog watchDog = new PingWatchDog(1, "127.0.0.1");
         assertEquals(HistoryRecord.ServiceStatus.UNKNOWN, watchDog.getCurrentStatus());
 
         watchDog.checkServiceAvailability();
@@ -39,7 +39,7 @@ public class PingWatchDogTests {
 
     @Test
     void checkImpossibleAddress() {
-        PingWatchDog watchDog = new PingWatchDog(1, "999.999.999.999", 3000, 3, 3);
+        PingWatchDog watchDog = new PingWatchDog(1, "999.999.999.999");
         assertEquals(HistoryRecord.ServiceStatus.UNKNOWN, watchDog.getCurrentStatus());
 
         assertThrows(UnknownHostException.class, () -> {

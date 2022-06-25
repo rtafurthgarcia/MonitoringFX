@@ -1,7 +1,7 @@
 package org.hftm.model;
 
 import java.net.UnknownHostException;
-import java.time.Duration;
+import javafx.util.Duration;
 
 import org.hftm.model.HistoryRecord.ServiceStatus;
 import org.xbill.DNS.*;
@@ -12,6 +12,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.concurrent.Task;
 
 public class DNSRecordWatchDog extends AbstractWatchDog {
 
@@ -42,9 +43,8 @@ public class DNSRecordWatchDog extends AbstractWatchDog {
         return recordType;
     }
 
-    public DNSRecordWatchDog(Integer id, String service, Integer timeout, Integer heartbeat, Integer retries) throws UnknownHostException {
-        super(id, service, timeout, heartbeat, retries);
-        // TODO Auto-generated constructor stub
+    public DNSRecordWatchDog(Integer id, String service, Integer timeout, Duration period, Integer maxFailures) throws UnknownHostException {
+        super(id, service, timeout, period, maxFailures);
 
         this.resolver = new SimpleObjectProperty<>(new SimpleResolver("1.1.1.1"));
         this.recordType = new SimpleIntegerProperty(Type.ANY);
@@ -52,18 +52,18 @@ public class DNSRecordWatchDog extends AbstractWatchDog {
     }
 
     public DNSRecordWatchDog(Integer id, String service, Integer recordType, SimpleResolver resolver) throws UnknownHostException {
-        this(id, service, DEFAULT_TIMEOUT, DEFAULT_HEARTBEAT, DEFAULT_RETRIES);
+        this(id, service, DEFAULT_TIMEOUT, DEFAULT_PERIOD, DEFAULT_MAX_FAILURE);
 
         this.recordType.set(recordType);
         this.resolver.set(resolver);
-        this.resolver.get().setTimeout(Duration.ofMillis(getTimeout()));
+        this.resolver.get().setTimeout(java.time.Duration.ofMillis(getTimeout()));
     }
 
     @Override
     public void checkServiceAvailability() throws TextParseException {
         boolean isReachable = false;
 
-        for (Integer count = getRetries(); count > 0; count--) {
+        for (Integer count = getMaximumFailureCount(); count > 0; count--) {
             Lookup lookup = new Lookup(Name.fromString(getService()), getRecordType(), DClass.IN);
             lookup.setResolver(getResolver());
     

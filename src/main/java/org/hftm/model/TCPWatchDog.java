@@ -30,7 +30,7 @@ public class TCPWatchDog extends AbstractWatchDog {
     }
 
     public TCPWatchDog(Integer id, String service, Integer port) {
-        super(id, service, DEFAULT_TIMEOUT, DEFAULT_HEARTBEAT, DEFAULT_RETRIES);
+        super(id, service, DEFAULT_TIMEOUT, DEFAULT_PERIOD, DEFAULT_MAX_FAILURE);
 
         this.port = new SimpleIntegerProperty(port);
         setTypeProperty();
@@ -40,7 +40,7 @@ public class TCPWatchDog extends AbstractWatchDog {
     public void checkServiceAvailability() throws UnknownHostException {
         boolean isReachable = false;
 
-        for (Integer count = getRetries(); count > 0; count--) {
+        for (Integer count = getMaximumFailureCount(); count > 0; count--) {
             try {
                 Socket clientSocket = new Socket(getService(), getPort());
                 PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);

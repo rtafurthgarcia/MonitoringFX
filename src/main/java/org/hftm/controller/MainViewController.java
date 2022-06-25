@@ -1,11 +1,18 @@
 package org.hftm.controller;
 
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import org.hftm.MonitoringFX;
 import org.hftm.model.AbstractWatchDog;
 import org.hftm.model.HistoryRecord;
 import org.hftm.model.HistoryRecord.ServiceStatus;
 
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.ScheduledService;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -44,13 +51,70 @@ public class MainViewController {
         this.watchDogsTable.setItems(this.app.getWatchDogs());
     }
 
+    public void setScheduldedExecutionsOfWatchdogs() {
+        
+        /*listOfWatchdogsToSchedul.forEach((heartbeat, listOfWatchdogs) -> {
+            ScheduledService<Void> ScheduledService = new ScheduledService<>() {
+                @Override
+                protected Task<Void> createTask() {
+                    Task task = new Task<>() {
+                        @Override
+                        public Void call() {
+                            final int toLoad = 10;
+                            for (int i = 1; i <= toLoad; i++) {
+                                bookNames.add(getFromDatabase(i + 1));
+                                updateProgress(i, toLoad);
+                            }
+                            System.out.println("Got all books!");;
+                            return bookNames;
+                        }
+                    };
+                    return task;
+                }
+            };
+
+            
+        });
+
+        /*
+        <ScheduledService<List<String>> scheduledService = new ScheduledService<>() {
+            @Override
+            protected Task<List<String>> createTask() {
+                Task task = new Task<>() {
+                    final List<String> bookNames = new ArrayList<>();
+                    @Override
+                    public List<String> call() {
+                        final int toLoad = 10;
+                        for (int i = 1; i <= toLoad; i++) {
+                            bookNames.add(getFromDatabase(i + 1));
+                            updateProgress(i, toLoad);
+                        }
+                        System.out.println("Got all books!");;
+                        return bookNames;
+                    }
+                    //Simulate database delay
+                    private String getFromDatabase(int bookNumber) {
+                        try {
+                            Thread.sleep(225);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        return "Book Number: " + bookNumber;
+                    }
+                };
+                //task.setOnSucceeded(workerStateEvent -> taskLabel.setText("Waiting..."));
+                return task;
+            }
+        }; */
+    }
+
     @FXML
     public void initialize() {
         this.idColumn.setCellValueFactory(cellData -> cellData.getValue().idProperty());
         this.serviceColumn.setCellValueFactory(cellData -> cellData.getValue().serviceProperty());
         this.typeColumn.setCellValueFactory(cellData -> cellData.getValue().typeProperty());
         this.statusColumn.setCellValueFactory(cellData -> cellData.getValue().currentStatusProperty());
-        this.heartbeatColumn.setCellValueFactory(cellData -> cellData.getValue().heartbeatProperty());
+        this.heartbeatColumn.setCellValueFactory(cellData -> cellData.getValue().periodProperty());
 
         Callback factory = new Callback<TableColumn<AbstractWatchDog, ServiceStatus>, TableCell<AbstractWatchDog, ServiceStatus>>() {
             @Override

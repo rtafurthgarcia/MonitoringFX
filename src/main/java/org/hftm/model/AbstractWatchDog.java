@@ -1,26 +1,28 @@
 package org.hftm.model;
 
 import javafx.beans.property.*;
+import javafx.concurrent.ScheduledService;
+import javafx.concurrent.Task;
+import javafx.util.Duration;
 
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import org.hftm.model.HistoryRecord.ServiceStatus;
 
-public abstract class AbstractWatchDog {
+public abstract class AbstractWatchDog extends ScheduledService {
 
-    //in milliseconds !
     protected static final Integer DEFAULT_TIMEOUT = 2000;
-    protected static final Integer DEFAULT_RETRIES = 3;
-    protected static final Integer DEFAULT_HEARTBEAT = 3000;
+    protected static final Integer DEFAULT_MAX_FAILURE = 3;
+    protected static final Duration DEFAULT_PERIOD = new Duration(3000);
 
     private IntegerProperty id;
     private StringProperty service;
     private ObjectProperty<HistoryRecord.ServiceStatus> currentStatus;
-    private BooleanProperty running;
+    //private BooleanProperty running;
     private IntegerProperty timeout;
-    private IntegerProperty heartbeat;
-    private IntegerProperty retries;
+    //private IntegerProperty period;
+    //private IntegerProperty maxFailures;
     private FloatProperty uptime20h;
     private FloatProperty uptime30d; 
     private LocalDateTime creationDateTime;
@@ -58,13 +60,13 @@ public abstract class AbstractWatchDog {
         monitoringHistory.add(newRecord);
     }
 
-    public Boolean getRunning() {
+    /*public Boolean getRunning() {
         return running.get();
     }
 
     public void setRunning(boolean newValue) {
         running.set(newValue);
-    }
+    }*/
 
     public Integer getTimeout() {
         return timeout.get();
@@ -74,21 +76,21 @@ public abstract class AbstractWatchDog {
         timeout.set(newValue);
     }
 
-    public Integer getHeartbeat() {
-        return heartbeat.get();
+    /*public Integer getperiod() {
+        return period.get();
     }
 
     public void setHeartbear(Integer newValue) {
-        heartbeat.set(newValue);
+        period.set(newValue);
     }
 
     public Integer getRetries() {
-        return retries.get();
+        return maxFailures.get();
     }
 
     public void setRetries(Integer newValue) {
-        retries.set(newValue);
-    }
+        maxFailures.set(newValue);
+    }*/
 
     public Float getUptime20h() {
         return uptime20h.get();
@@ -109,21 +111,21 @@ public abstract class AbstractWatchDog {
         return currentStatus;
     }
     
-    public BooleanProperty runningProperty() {
+    /*public BooleanProperty runningProperty() {
         return running;
-    }
+    }*/
 
     public IntegerProperty timeoutProperty() {
         return timeout;
     }
 
-    public IntegerProperty heartbeatProperty() {
-        return heartbeat;
+    /*public IntegerProperty periodProperty() {
+        return period;
     }
 
     public IntegerProperty retriesProperty() {
-        return retries;
-    }
+        return maxFailures;
+    }*/
 
     public FloatProperty uptime20hProperty() {
         return uptime20h;
@@ -148,23 +150,24 @@ public abstract class AbstractWatchDog {
         return monitoringHistory;
     }
 
-    protected AbstractWatchDog(Integer id, String service, Integer timeout, Integer heartbeat, Integer retries) {
+    protected AbstractWatchDog(Integer id, String service, Integer timeout, Duration period, Integer maxFailures) {
+        super();
+        super.setPeriod(period);
+        super.setMaximumFailureCount(maxFailures);
+
         this.id = new SimpleIntegerProperty(id);
         this.service = new SimpleStringProperty(service);
         this.timeout = new SimpleIntegerProperty(timeout);
-        this.heartbeat = new SimpleIntegerProperty(heartbeat);
-        this.retries = new SimpleIntegerProperty(retries);
         this.monitoringHistory = new LinkedList<HistoryRecord>(); 
 
         creationDateTime = LocalDateTime.now();
-        this.running = new SimpleBooleanProperty(true);
         this.currentStatus = new SimpleObjectProperty<>();
 
         this.setCurrentStatus(ServiceStatus.UNKNOWN);
     } 
 
     protected AbstractWatchDog(Integer id, String service) {
-        this(id, service, DEFAULT_TIMEOUT, DEFAULT_HEARTBEAT, DEFAULT_RETRIES);
+        this(id, service, DEFAULT_TIMEOUT, DEFAULT_PERIOD, DEFAULT_MAX_FAILURE);
     }
 
     public abstract void checkServiceAvailability() throws Exception;
@@ -175,51 +178,13 @@ public abstract class AbstractWatchDog {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((heartbeat == null) ? 0 : heartbeat.hashCode());
-        result = prime * result + ((retries == null) ? 0 : retries.hashCode());
-        result = prime * result + ((running == null) ? 0 : running.hashCode());
-        result = prime * result + ((service == null) ? 0 : service.hashCode());
-        result = prime * result + ((timeout == null) ? 0 : timeout.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        AbstractWatchDog other = (AbstractWatchDog) obj;
-        if (heartbeat == null) {
-            if (other.heartbeat != null)
-                return false;
-        } else if (!heartbeat.equals(other.heartbeat))
-            return false;
-        if (retries == null) {
-            if (other.retries != null)
-                return false;
-        } else if (!retries.equals(other.retries))
-            return false;
-        if (running == null) {
-            if (other.running != null)
-                return false;
-        } else if (!running.equals(other.running))
-            return false;
-        if (service == null) {
-            if (other.service != null)
-                return false;
-        } else if (!service.equals(other.service))
-            return false;
-        if (timeout == null) {
-            if (other.timeout != null)
-                return false;
-        } else if (!timeout.equals(other.timeout))
-            return false;
-        return true;
+    public Task createTask() {
+        return new Task<Void>() {
+            protected Void call() throws Exception {
+                checkServiceAvailability();
+                
+                return null;
+            }
+        };
     }
 }

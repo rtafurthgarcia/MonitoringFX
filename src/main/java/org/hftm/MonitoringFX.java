@@ -27,6 +27,16 @@ public class MonitoringFX extends Application {
         return watchDogs;
     }
 
+    public MonitoringFX() {
+        try {
+            watchDogs.add(new PingWatchDog(1, "1.1.1.1"));
+            watchDogs.add(new HTTPWatchDog(2, "https://hftm.ch", HTTPWatchDog.RequestType.GET, "", ""));
+            watchDogs.add(new DNSRecordWatchDog(3, "hftm.ch", Type.MX, new SimpleResolver("1.1.1.1")));   
+        } catch (Exception e) {
+            //TODO: handle exception
+        }
+    }
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -36,9 +46,6 @@ public class MonitoringFX extends Application {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("MonitoringFX");
 
-        watchDogs.add(new PingWatchDog(1, "1.1.1.1"));
-        watchDogs.add(new HTTPWatchDog(2, "https://hftm.ch", HTTPWatchDog.RequestType.GET, "", ""));
-        watchDogs.add(new DNSRecordWatchDog(3, "hftm.ch", Type.MX, new SimpleResolver("1.1.1.1")));
         this.showMainView();
     }
 

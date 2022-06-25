@@ -14,18 +14,20 @@ public abstract class AbstractWatchDog {
     protected static final Integer DEFAULT_RETRIES = 3;
     protected static final Integer DEFAULT_HEARTBEAT = 3000;
 
-    private SimpleIntegerProperty id;
-    private SimpleStringProperty service;
-    private SimpleObjectProperty<HistoryRecord.ServiceStatus> currentStatus;
-    private SimpleBooleanProperty running;
-    private SimpleIntegerProperty timeout;
-    private SimpleIntegerProperty heartbeat;
-    private SimpleIntegerProperty retries;
-    private SimpleFloatProperty uptime20h;
-    private SimpleFloatProperty uptime30d; 
+    private IntegerProperty id;
+    private StringProperty service;
+    private ObjectProperty<HistoryRecord.ServiceStatus> currentStatus;
+    private BooleanProperty running;
+    private IntegerProperty timeout;
+    private IntegerProperty heartbeat;
+    private IntegerProperty retries;
+    private FloatProperty uptime20h;
+    private FloatProperty uptime30d; 
     private LocalDateTime creationDateTime;
     private LinkedList<HistoryRecord> monitoringHistory;
     
+    protected StringProperty type;
+
     public Integer getId() {
         return this.id.get();
     }
@@ -96,43 +98,49 @@ public abstract class AbstractWatchDog {
         return uptime30d.get();
     }
 
-    public SimpleIntegerProperty getIdProperty() {
+    public IntegerProperty idProperty() {
         return id;
     }
-    public SimpleStringProperty getServiceProperty() {
+    public StringProperty serviceProperty() {
         return service;
     }
     
-    public ObjectProperty<HistoryRecord.ServiceStatus> getCurrentStatusProperty() {
+    public ObjectProperty<HistoryRecord.ServiceStatus> currentStatusProperty() {
         return currentStatus;
     }
     
-    public SimpleBooleanProperty getRunningProperty() {
+    public BooleanProperty runningProperty() {
         return running;
     }
 
-    public SimpleIntegerProperty getTimeoutProperty() {
+    public IntegerProperty timeoutProperty() {
         return timeout;
     }
 
-    public SimpleIntegerProperty getHeartbeatProperty() {
+    public IntegerProperty heartbeatProperty() {
         return heartbeat;
     }
 
-    public SimpleIntegerProperty getRetriesProperty() {
+    public IntegerProperty retriesProperty() {
         return retries;
     }
 
-    public SimpleFloatProperty getUptime20hProperty() {
+    public FloatProperty uptime20hProperty() {
         return uptime20h;
     }
 
+    // force all child classes to define their own type so that it can be shown in the tableviews
+    protected abstract void setTypeProperty();
 
-    public SimpleFloatProperty getUptime30dProperty() {
+    public StringProperty typeProperty() {
+        return type;
+    }
+
+    public FloatProperty uptime30dProperty() {
         return uptime30d;
     }
 
-    public LocalDateTime getCreationDateTimeProperty() {
+    public LocalDateTime getCreationDateTime() {
         return creationDateTime;
     }
 

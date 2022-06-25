@@ -7,4 +7,7 @@ module org.hftm {
     requires org.dnsjava;
 
     exports org.hftm;
+
+    opens org.hftm.controller to javafx.fxml;
+    opens org.hftm.model to javafx.fxml;
 }

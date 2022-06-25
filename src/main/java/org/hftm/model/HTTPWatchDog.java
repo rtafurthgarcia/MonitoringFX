@@ -18,8 +18,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.ListChangeListener.Change;
 
 public class HTTPWatchDog extends AbstractWatchDog {
 
@@ -61,15 +59,15 @@ public class HTTPWatchDog extends AbstractWatchDog {
         this.body.set(body);
     }
 
-    public StringProperty getHeadersProperty() {
+    public StringProperty headersProperty() {
         return headers;
     }
 
-    public StringProperty getBodyProperty() {
+    public StringProperty bodyProperty() {
         return body;
     }
 
-    public ObjectProperty<RequestType> getRequestTypeProperty() {
+    public ObjectProperty<RequestType> requestTypeProperty() {
         return requestType;
     }
 
@@ -100,7 +98,7 @@ public class HTTPWatchDog extends AbstractWatchDog {
         this.headers = new SimpleStringProperty("");
         this.requestType = new SimpleObjectProperty<>(RequestType.GET);
 
-        this.getServiceProperty().addListener(propertyChangedListener);
+        this.serviceProperty().addListener(propertyChangedListener);
         this.body.addListener(propertyChangedListener);
         this.headers.addListener(propertyChangedListener);
         this.requestType.addListener(requestTypeChangedListener);
@@ -121,7 +119,7 @@ public class HTTPWatchDog extends AbstractWatchDog {
     public void checkServiceAvailability() throws IOException, InterruptedException {
         boolean isReachable = false;
 
-        for (Integer count = getRetriesProperty().get(); count > 0; count--) {
+        for (Integer count = getRetries(); count > 0; count--) {
             HttpRequest request = builder.build();
 
             try {
@@ -143,5 +141,10 @@ public class HTTPWatchDog extends AbstractWatchDog {
         } else {
             setCurrentStatus(ServiceStatus.DOWN);
         }
+    }
+
+    @Override
+    protected void setTypeProperty() {
+        super.type = new SimpleStringProperty("HTTP(S)");
     } 
 }

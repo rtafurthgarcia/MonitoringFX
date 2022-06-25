@@ -8,13 +8,15 @@ import org.xbill.DNS.*;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 public class DNSRecordWatchDog extends AbstractWatchDog {
 
     private ObjectProperty<SimpleResolver> resolver;
-    private SimpleIntegerProperty recordType;
-
+    private IntegerProperty recordType;
 
     public Integer getRecordType() {
         return recordType.get();
@@ -32,11 +34,11 @@ public class DNSRecordWatchDog extends AbstractWatchDog {
         this.resolver.set(resolver);
     }
 
-    public ObjectProperty<SimpleResolver> getResolverProperty() {
+    public ObjectProperty<SimpleResolver> resolverProperty() {
         return resolver;
     }
 
-    public SimpleIntegerProperty getRecordTypeProperty() {
+    public IntegerProperty recordTypeProperty() {
         return recordType;
     }
 
@@ -60,7 +62,7 @@ public class DNSRecordWatchDog extends AbstractWatchDog {
     public void checkServiceAvailability() throws TextParseException {
         boolean isReachable = false;
 
-        for (Integer count = getRetriesProperty().get(); count > 0; count--) {
+        for (Integer count = getRetries(); count > 0; count--) {
             Lookup lookup = new Lookup(Name.fromString(getService()), getRecordType(), DClass.IN);
             lookup.setResolver(getResolver());
     
@@ -79,5 +81,10 @@ public class DNSRecordWatchDog extends AbstractWatchDog {
             setCurrentStatus(ServiceStatus.DOWN);
         }
 
-    };
+    }
+
+    @Override
+    protected void setTypeProperty() {
+        super.type = new SimpleStringProperty("DNS record");
+    }
 }

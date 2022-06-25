@@ -2,12 +2,13 @@ package org.hftm.model;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 import org.hftm.model.HistoryRecord.ServiceStatus;
 
 import org.hftm.util.OsDetectionUtil;
-import org.hftm.util.OsDetectionUtil.OperatingSystemType;;
+import org.hftm.util.OsDetectionUtil.OperatingSystemType;
+
+import javafx.beans.property.SimpleStringProperty;;
 
 public class PingWatchDog extends AbstractWatchDog {
 
@@ -38,7 +39,7 @@ public class PingWatchDog extends AbstractWatchDog {
             pingCmd = String.format("ping -c 1 -W %d %s", getTimeout(), getService());
         }
 
-        for (Integer count = getRetriesProperty().get(); count > 0; count--) {
+        for (Integer count = getRetries(); count > 0; count--) {
             Runtime run  = Runtime.getRuntime();
             Process process = run.exec(pingCmd);
 
@@ -55,5 +56,11 @@ public class PingWatchDog extends AbstractWatchDog {
         } else {
             setCurrentStatus(ServiceStatus.DOWN);
         }
+    }
+
+    @Override
+    protected void setTypeProperty() {
+        super.type = new SimpleStringProperty("Ping");
+        
     }
 }

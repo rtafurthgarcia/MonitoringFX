@@ -11,14 +11,11 @@ import org.hftm.model.HistoryRecord.ServiceStatus;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 
 public class TCPWatchDog extends AbstractWatchDog {
 
     private IntegerProperty port;
-
-    private Socket clientSocket;
-    private PrintWriter out;
-    private BufferedReader in;
 
     public Integer getPort() {
         return port.get();
@@ -28,7 +25,7 @@ public class TCPWatchDog extends AbstractWatchDog {
         this.port.set(port);
     }
 
-    public IntegerProperty getPortProperty() {
+    public IntegerProperty portProperty() {
         return port;
     }
 
@@ -42,11 +39,11 @@ public class TCPWatchDog extends AbstractWatchDog {
     public void checkServiceAvailability() throws UnknownHostException {
         boolean isReachable = false;
 
-        for (Integer count = getRetriesProperty().get(); count > 0; count--) {
+        for (Integer count = getRetries(); count > 0; count--) {
             try {
-                clientSocket = new Socket(getService(), getPort());
-                out = new PrintWriter(clientSocket.getOutputStream(), true);
-                in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                Socket clientSocket = new Socket(getService(), getPort());
+                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
                 clientSocket.close();
                 out.close();
@@ -66,5 +63,11 @@ public class TCPWatchDog extends AbstractWatchDog {
         } else {
             setCurrentStatus(ServiceStatus.DOWN);
         }
+    }
+
+    @Override
+    protected void setTypeProperty() {
+        super.type = new SimpleStringProperty("TCP");
+        
     }
 }

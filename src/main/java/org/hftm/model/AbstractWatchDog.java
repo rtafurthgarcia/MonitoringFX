@@ -14,7 +14,7 @@ public abstract class AbstractWatchDog extends ScheduledService {
 
     protected static final Integer DEFAULT_TIMEOUT = 2000;
     protected static final Integer DEFAULT_MAX_FAILURE = 3;
-    protected static final Duration DEFAULT_PERIOD = new Duration(3000);
+    protected static final Duration DEFAULT_PERIOD = new Duration(15000);
 
     private IntegerProperty id;
     private StringProperty service;
@@ -154,6 +154,7 @@ public abstract class AbstractWatchDog extends ScheduledService {
         super();
         super.setPeriod(period);
         super.setMaximumFailureCount(maxFailures);
+        super.setDelay(Duration.seconds(3));
 
         this.id = new SimpleIntegerProperty(id);
         this.service = new SimpleStringProperty(service);
@@ -164,6 +165,8 @@ public abstract class AbstractWatchDog extends ScheduledService {
         this.currentStatus = new SimpleObjectProperty<>();
 
         this.setCurrentStatus(ServiceStatus.UNKNOWN);
+
+        this.setOnFailed((event) -> this.setCurrentStatus(ServiceStatus.FAILED));
     } 
 
     protected AbstractWatchDog(Integer id, String service) {

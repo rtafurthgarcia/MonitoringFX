@@ -7,7 +7,8 @@ public class HistoryRecord {
         UP, 
         DOWN,
         PAUSED,
-        UNKNOWN
+        UNKNOWN,
+        FAILED
     }
 
     private LocalDateTime timestamp;

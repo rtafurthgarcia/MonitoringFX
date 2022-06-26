@@ -1,25 +1,14 @@
 package org.hftm.controller;
 
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import org.hftm.MonitoringFX;
 import org.hftm.model.AbstractWatchDog;
 import org.hftm.model.HistoryRecord;
 import org.hftm.model.HistoryRecord.ServiceStatus;
 
-import javafx.beans.value.ObservableValue;
-import javafx.concurrent.ScheduledService;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TableColumn.CellDataFeatures;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.paint.Color;
 import javafx.util.Callback;
 
 public class MainViewController {
@@ -51,61 +40,10 @@ public class MainViewController {
         this.watchDogsTable.setItems(this.app.getWatchDogs());
     }
 
-    public void setScheduldedExecutionsOfWatchdogs() {
-        
-        /*listOfWatchdogsToSchedul.forEach((heartbeat, listOfWatchdogs) -> {
-            ScheduledService<Void> ScheduledService = new ScheduledService<>() {
-                @Override
-                protected Task<Void> createTask() {
-                    Task task = new Task<>() {
-                        @Override
-                        public Void call() {
-                            final int toLoad = 10;
-                            for (int i = 1; i <= toLoad; i++) {
-                                bookNames.add(getFromDatabase(i + 1));
-                                updateProgress(i, toLoad);
-                            }
-                            System.out.println("Got all books!");;
-                            return bookNames;
-                        }
-                    };
-                    return task;
-                }
-            };
-
-            
-        });
-
-        /*
-        <ScheduledService<List<String>> scheduledService = new ScheduledService<>() {
-            @Override
-            protected Task<List<String>> createTask() {
-                Task task = new Task<>() {
-                    final List<String> bookNames = new ArrayList<>();
-                    @Override
-                    public List<String> call() {
-                        final int toLoad = 10;
-                        for (int i = 1; i <= toLoad; i++) {
-                            bookNames.add(getFromDatabase(i + 1));
-                            updateProgress(i, toLoad);
-                        }
-                        System.out.println("Got all books!");;
-                        return bookNames;
-                    }
-                    //Simulate database delay
-                    private String getFromDatabase(int bookNumber) {
-                        try {
-                            Thread.sleep(225);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        return "Book Number: " + bookNumber;
-                    }
-                };
-                //task.setOnSucceeded(workerStateEvent -> taskLabel.setText("Waiting..."));
-                return task;
-            }
-        }; */
+    public void startWatchDogs() {
+        for(AbstractWatchDog watchDogToSchedule: this.app.getWatchDogs()) {
+            watchDogToSchedule.start();
+        }
     }
 
     @FXML
@@ -131,13 +69,16 @@ public class MainViewController {
         
                             switch (item) {
                                 case UP:
-                                    this.setStyle("-fx-background-color: green;-fx-text-fill: black;");    
+                                    this.setStyle("-fx-background-color: green;-fx-text-fill: white;");    
                                     break;
                                 case DOWN:
-                                    this.setStyle("-fx-background-color: red;-fx-text-fill: black;");
+                                    this.setStyle("-fx-background-color: red;-fx-text-fill: white;");
+                                    break;
+                                case FAILED:
+                                    this.setStyle("-fx-background-color: red;-fx-text-fill: white;");
                                     break;
                                 case PAUSED:
-                                    this.setStyle("-fx-background-color: blue;-fx-text-fill: black;");
+                                    this.setStyle("-fx-background-color: blue;-fx-text-fill: white;");
                                     break;
                                 default:
                                     this.setStyle("-fx-background-color: yellow;-fx-text-fill: black;");

@@ -61,6 +61,8 @@ public class MonitoringFX extends Application {
 
             MainViewController controller = loader.getController();
             controller.setApp(this);
+            
+            controller.startWatchDogs();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -2,6 +2,7 @@ package org.hftm;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.nio.file.Paths;
 
 import org.hftm.controller.MainViewController;
 import org.hftm.model.*;
@@ -26,6 +27,10 @@ public class MonitoringFX extends Application {
     public ObservableList<AbstractWatchDog> getWatchDogs() {
         return watchDogs;
     }
+
+    public Stage getPrimaryStage() {
+		return this.primaryStage;
+	}
 
     public MonitoringFX() {
         try {
@@ -52,7 +57,8 @@ public class MonitoringFX extends Application {
     public void showMainView() {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(MonitoringFX.class.getResource("view/MainView.fxml"));
+            //loader.setResources(resources);
+            loader.setLocation(MonitoringFX.class.getResource(Paths.get("view", "MainView.fxml").toString()));
 
             // Show the scene containing the root layout.
             Scene scene = new Scene(loader.load());

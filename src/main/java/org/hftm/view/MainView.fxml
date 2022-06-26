@@ -165,36 +165,36 @@
          <children>
             <ButtonBar buttonMinWidth="24.0" nodeOrientation="LEFT_TO_RIGHT">
                <buttons>
-                  <Button alignment="CENTER" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="32.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" textAlignment="CENTER" wrapText="true">
+                  <Button fx:id="buttonAdd" alignment="CENTER" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="32.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onButtonAddClicked" textAlignment="CENTER" wrapText="true">
                      <graphic>
-                        <ImageView id="addButton" fx:id="buttonAdd" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView id="addButton" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@res/002-plus.png" />
                            </image>
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button alignment="CENTER" graphicTextGap="0.0" layoutX="448.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="32.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" textAlignment="CENTER" wrapText="true">
+                  <Button fx:id="buttonEdit" alignment="CENTER" graphicTextGap="0.0" layoutX="448.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="32.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onButtonEditClicked" textAlignment="CENTER" wrapText="true">
                      <graphic>
-                        <ImageView id="editButton" fx:id="buttonEdit" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView id="editButton" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@res/006-pencil.png" />
                            </image>
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button alignment="CENTER" graphicTextGap="0.0" layoutX="448.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="32.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" textAlignment="CENTER" wrapText="true">
+                  <Button fx:id="buttonDelete" alignment="CENTER" graphicTextGap="0.0" layoutX="448.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="32.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onButtonDeleteClicked" textAlignment="CENTER" wrapText="true">
                      <graphic>
-                        <ImageView id="deleteButton" fx:id="buttonDelete" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView id="deleteButton" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@res/013-trash.png" />
                            </image>
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button alignment="CENTER" graphicTextGap="0.0" layoutX="448.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="32.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" textAlignment="CENTER" wrapText="true">
+                  <Button fx:id="buttonStartPause" alignment="CENTER" graphicTextGap="0.0" layoutX="448.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="32.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onButtonStartPauseClicked" textAlignment="CENTER" wrapText="true">
                      <graphic>
-                        <ImageView id="stopplayButton" fx:id="buttonStartPause" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView id="stopplayButton" fx:id="imageStartPause" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@res/014-double-chevron.png" />
                            </image>

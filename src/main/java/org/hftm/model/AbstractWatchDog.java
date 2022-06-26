@@ -3,6 +3,7 @@ package org.hftm.model;
 import javafx.beans.property.*;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
+import javafx.event.Event;
 import javafx.util.Duration;
 
 import java.time.LocalDateTime;
@@ -19,10 +20,7 @@ public abstract class AbstractWatchDog extends ScheduledService {
     private IntegerProperty id;
     private StringProperty service;
     private ObjectProperty<HistoryRecord.ServiceStatus> currentStatus;
-    //private BooleanProperty running;
     private IntegerProperty timeout;
-    //private IntegerProperty period;
-    //private IntegerProperty maxFailures;
     private FloatProperty uptime20h;
     private FloatProperty uptime30d; 
     private LocalDateTime creationDateTime;
@@ -60,14 +58,6 @@ public abstract class AbstractWatchDog extends ScheduledService {
         monitoringHistory.add(newRecord);
     }
 
-    /*public Boolean getRunning() {
-        return running.get();
-    }
-
-    public void setRunning(boolean newValue) {
-        running.set(newValue);
-    }*/
-
     public Integer getTimeout() {
         return timeout.get();
     }
@@ -75,22 +65,6 @@ public abstract class AbstractWatchDog extends ScheduledService {
     public void setTimeout(Integer newValue) {
         timeout.set(newValue);
     }
-
-    /*public Integer getperiod() {
-        return period.get();
-    }
-
-    public void setHeartbear(Integer newValue) {
-        period.set(newValue);
-    }
-
-    public Integer getRetries() {
-        return maxFailures.get();
-    }
-
-    public void setRetries(Integer newValue) {
-        maxFailures.set(newValue);
-    }*/
 
     public Float getUptime20h() {
         return uptime20h.get();
@@ -111,21 +85,9 @@ public abstract class AbstractWatchDog extends ScheduledService {
         return currentStatus;
     }
     
-    /*public BooleanProperty runningProperty() {
-        return running;
-    }*/
-
     public IntegerProperty timeoutProperty() {
         return timeout;
     }
-
-    /*public IntegerProperty periodProperty() {
-        return period;
-    }
-
-    public IntegerProperty retriesProperty() {
-        return maxFailures;
-    }*/
 
     public FloatProperty uptime20hProperty() {
         return uptime20h;
@@ -167,6 +129,8 @@ public abstract class AbstractWatchDog extends ScheduledService {
         this.setCurrentStatus(ServiceStatus.UNKNOWN);
 
         this.setOnFailed((event) -> this.setCurrentStatus(ServiceStatus.FAILED));
+        this.setOnCancelled((event) -> this.setCurrentStatus(ServiceStatus.PAUSED));
+        //this.setOnReady((event) -> this.setCurrentStatus(ServiceStatus.UNKNOWN));
     } 
 
     protected AbstractWatchDog(Integer id, String service) {

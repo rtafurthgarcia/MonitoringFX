@@ -2,6 +2,9 @@ package org.hftm.controller;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 
 import org.hftm.MonitoringFX;
 import org.hftm.model.AbstractWatchDog;
@@ -11,6 +14,7 @@ import org.hftm.model.HistoryRecord.ServiceStatus;
 import org.hftm.util.ImageResources;
 import org.xbill.DNS.tools.primary;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -53,10 +57,29 @@ public class MainViewController {
     private Label labelStatus;
 
     @FXML
+    private Label labelSelected;
+
+    @FXML
+    private Label labelTimeout;
+
+    @FXML
+    private Label labelUptime;
+
+    @FXML
+    private Label labelCreationDate;
+
+    @FXML
+    private Label labelCreationTime;
+
+    @FXML
+    private Label labelRetries;
+
+    @FXML
     private ImageResources resources;
 
-    private MonitoringFX app;  
+    private DecimalFormat uptimeFormatter;
 
+    private MonitoringFX app;  
 
     public void setApp(MonitoringFX app) {
         this.app = app;
@@ -72,36 +95,59 @@ public class MainViewController {
     }
 
     private void updateServiceState() {
-        boolean allClear = true;
+        if (imageStatus != null && labelStatus != null) {
+            boolean allClear = true;
 
-        for(AbstractWatchDog watchDogToCheck: this.app.getWatchDogs()) {
-            if (watchDogToCheck.getCurrentStatus().equals(ServiceStatus.DOWN)) {
-                allClear = false;
-                break;
+            for(AbstractWatchDog watchDogToCheck: this.app.getWatchDogs()) {
+                if (watchDogToCheck.getCurrentStatus().equals(ServiceStatus.DOWN)) {
+                    allClear = false;
+                    break;
+                }
             }
-        }
 
-        if (allClear) {
-            imageStatus.setImage(resources.get("ALL_OK"));
-            labelStatus.setText("ONLINE");
-            labelStatus.setTextFill(Paint.valueOf("#4caf50"));
-        } else {
-            imageStatus.setImage(resources.get("ALL_NOK"));
-            labelStatus.setText("DEGRADED");
-            labelStatus.setTextFill(Paint.valueOf("#f44336"));
+            if (allClear) {
+                imageStatus.setImage(resources.get("ALL_OK"));
+                labelStatus.setText("ONLINE");
+                labelStatus.setTextFill(Paint.valueOf("#4caf50"));
+            } else {
+                imageStatus.setImage(resources.get("ALL_NOK"));
+                labelStatus.setText("DEGRADED");
+                labelStatus.setTextFill(Paint.valueOf("#f44336"));
+            }
+
+
+            AbstractWatchDog selectedWatchDog = watchDogsTable.getSelectionModel().getSelectedItem();
+
+            if (selectedWatchDog != null) {
+                labelUptime.setText(uptimeFormatter.format(selectedWatchDog.getUptimeSinceBeginning()) + "%");
+            }
         }
     }
 
     @FXML
     public void initialize() {
         resources = new ImageResources();
-        //imageStartPause = new ImageView(resources.get("PAUSE_LOGO"));
+
+        uptimeFormatter = new DecimalFormat("##.##");
 
         this.idColumn.setCellValueFactory(cellData -> cellData.getValue().idProperty());
         this.serviceColumn.setCellValueFactory(cellData -> cellData.getValue().serviceProperty());
         this.typeColumn.setCellValueFactory(cellData -> cellData.getValue().typeProperty());
         this.statusColumn.setCellValueFactory(cellData -> cellData.getValue().currentStatusProperty());
         this.heartbeatColumn.setCellValueFactory(cellData -> cellData.getValue().periodProperty());
+
+        labelSelected.setText("");
+        labelTimeout.setText("");
+        labelCreationDate.setText("");
+        labelCreationTime.setText("");
+        labelRetries.setText("");
+        labelUptime.setText("??%");
+
+        /*label.textProperty().bind(integerProperty.asString());        
+        labelSelected.textProperty().bind(currentlySelectedWatchDog.idProperty().asString());
+        labelRetries.textProperty().bind(currentlySelectedWatchDog.maximumFailureCountProperty().asString());
+        labelTimeout.textProperty().bind(currentlySelectedWatchDog.timeoutProperty().asString());
+        labelCreationDate.textProperty().bind(currentlySelectedWatchDog.getCreationDateTime().pro);**/
 
         Callback factory = new Callback<TableColumn<AbstractWatchDog, ServiceStatus>, TableCell<AbstractWatchDog, ServiceStatus>>() {
             @Override
@@ -111,6 +157,8 @@ public class MainViewController {
                     public void updateItem(ServiceStatus item, boolean empty) {
                         super.updateItem(item, empty);
         
+                        //labelUptime.setText(String.valueOf(selectedWatchDog.getUptimeSinceBeginning()) + "%");
+
                         if (item == null || empty) {
                             setText(null);
                         } else {
@@ -179,6 +227,13 @@ public class MainViewController {
         } else {
             imageStartPause.setImage(resources.get("PAUSE_LOGO"));
         }
+
+        labelSelected.setText("Selected: #" + selectedWatchDog.getId().toString());
+        labelTimeout.setText(selectedWatchDog.getTimeout().toString() + "ms");
+        labelCreationDate.setText(selectedWatchDog.getCreationDateTime().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)));
+        labelCreationTime.setText(selectedWatchDog.getCreationDateTime().format(DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM)));
+        labelRetries.setText(String.valueOf(selectedWatchDog.getMaximumFailureCount()));
+        labelUptime.setText(uptimeFormatter.format(selectedWatchDog.getUptimeSinceBeginning()) + "%");
     }
 
     @FXML

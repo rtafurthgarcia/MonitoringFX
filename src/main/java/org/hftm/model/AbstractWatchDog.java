@@ -1,15 +1,22 @@
 package org.hftm.model;
 
-import javafx.beans.property.*;
-import javafx.concurrent.ScheduledService;
-import javafx.concurrent.Task;
-import javafx.event.Event;
-import javafx.util.Duration;
-
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.hftm.model.HistoryRecord.ServiceStatus;
+
+import javafx.beans.property.FloatProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleFloatProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.concurrent.ScheduledService;
+import javafx.concurrent.Task;
+import javafx.util.Duration;
 
 public abstract class AbstractWatchDog extends ScheduledService {
 
@@ -21,11 +28,13 @@ public abstract class AbstractWatchDog extends ScheduledService {
     private StringProperty service;
     private ObjectProperty<HistoryRecord.ServiceStatus> currentStatus;
     private IntegerProperty timeout;
-    private FloatProperty uptime20h;
-    private FloatProperty uptime30d; 
+    private FloatProperty uptimeSinceBeginning;
     private LocalDateTime creationDateTime;
     private LinkedList<HistoryRecord> monitoringHistory;
     
+    private Integer upCounter;
+    private Integer downCounter;
+
     protected StringProperty type;
 
     public Integer getId() {
@@ -53,9 +62,21 @@ public abstract class AbstractWatchDog extends ScheduledService {
     public void setCurrentStatus(HistoryRecord.ServiceStatus newCurrentStatus) {
         currentStatus.set(newCurrentStatus);
 
-        HistoryRecord newRecord = new HistoryRecord(LocalDateTime.now(), newCurrentStatus); 
+        monitoringHistory.add(new HistoryRecord(LocalDateTime.now(), newCurrentStatus));
 
-        monitoringHistory.add(newRecord);
+        if (newCurrentStatus.equals(ServiceStatus.UP)) {
+            upCounter += 1;
+        } else if (newCurrentStatus.equals(ServiceStatus.DOWN)) {
+            downCounter += 1;
+        }
+
+        if (upCounter > 0) {
+            if (downCounter == 0) {
+                uptimeSinceBeginning.set(100);
+            } else {
+                uptimeSinceBeginning.set((float)(downCounter / upCounter * 100.0));
+            }
+        }
     }
 
     public Integer getTimeout() {
@@ -66,12 +87,16 @@ public abstract class AbstractWatchDog extends ScheduledService {
         timeout.set(newValue);
     }
 
-    public Float getUptime20h() {
-        return uptime20h.get();
+    public Float getUptimeSinceBeginning() {
+        return uptimeSinceBeginning.get();
     }
 
-    public Float getUptime30d() {
-        return uptime30d.get();
+    public void setUptimeSinceBeginning(Float newValue) {
+        this.uptimeSinceBeginning.set(newValue);
+    }
+
+    public FloatProperty uptimeFloatProperty(){
+        return uptimeSinceBeginning;
     }
 
     public IntegerProperty idProperty() {
@@ -89,8 +114,8 @@ public abstract class AbstractWatchDog extends ScheduledService {
         return timeout;
     }
 
-    public FloatProperty uptime20hProperty() {
-        return uptime20h;
+    public FloatProperty uptimeSinceBeginningProperty() {
+        return uptimeSinceBeginning;
     }
 
     // force all child classes to define their own type so that it can be shown in the tableviews
@@ -98,10 +123,6 @@ public abstract class AbstractWatchDog extends ScheduledService {
 
     public StringProperty typeProperty() {
         return type;
-    }
-
-    public FloatProperty uptime30dProperty() {
-        return uptime30d;
     }
 
     public LocalDateTime getCreationDateTime() {
@@ -122,6 +143,10 @@ public abstract class AbstractWatchDog extends ScheduledService {
         this.service = new SimpleStringProperty(service);
         this.timeout = new SimpleIntegerProperty(timeout);
         this.monitoringHistory = new LinkedList<HistoryRecord>(); 
+        this.uptimeSinceBeginning = new SimpleFloatProperty(0);
+
+        upCounter = 0;
+        downCounter = 0;
 
         creationDateTime = LocalDateTime.now();
         this.currentStatus = new SimpleObjectProperty<>();
@@ -130,9 +155,6 @@ public abstract class AbstractWatchDog extends ScheduledService {
 
         this.setOnFailed((event) -> onExceptionRaised());
         this.setOnCancelled((event) -> this.setCurrentStatus(ServiceStatus.PAUSED));
-        //this.setOnReady((event) -> this.setCurrentStatus(ServiceStatus.UNKNOWN));
-
-        //tart();
     }
 
     private void onExceptionRaised() {
@@ -146,11 +168,6 @@ public abstract class AbstractWatchDog extends ScheduledService {
     public abstract void checkServiceAvailability() throws Exception;
 
     @Override
-    public String toString() {
-        return getService();
-    }
-
-    @Override
     public Task createTask() {
         return new Task<Void>() {
             protected Void call() throws Exception {
@@ -160,9 +177,4 @@ public abstract class AbstractWatchDog extends ScheduledService {
             }
         };
     }
-
-    /*@Override
-    public void start() {
-        super.start();
-    }*/
 }

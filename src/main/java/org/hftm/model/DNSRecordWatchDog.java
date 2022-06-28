@@ -86,4 +86,5 @@ public class DNSRecordWatchDog extends AbstractWatchDog {
     protected void setTypeProperty() {
         super.type = new SimpleStringProperty("DNS record");
     }
+
 }

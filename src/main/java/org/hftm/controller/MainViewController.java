@@ -9,16 +9,19 @@ import org.hftm.model.HistoryRecord;
 import org.hftm.model.HistoryRecord.ServiceStatus;
 
 import org.hftm.util.ImageResources;
+import org.xbill.DNS.tools.primary;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Paint;
 import javafx.util.Callback;
 
 public class MainViewController {
@@ -43,6 +46,12 @@ public class MainViewController {
     @FXML
     private ImageView imageStartPause;
 
+    @FXML 
+    private ImageView imageStatus;
+
+    @FXML
+    private Label labelStatus;
+
     @FXML
     private ImageResources resources;
 
@@ -58,6 +67,28 @@ public class MainViewController {
     public void startWatchDogs() {
         for(AbstractWatchDog watchDogToSchedule: this.app.getWatchDogs()) {
             watchDogToSchedule.start();
+            watchDogToSchedule.currentStatusProperty().addListener((observable) -> updateServiceState());
+        }
+    }
+
+    private void updateServiceState() {
+        boolean allClear = true;
+
+        for(AbstractWatchDog watchDogToCheck: this.app.getWatchDogs()) {
+            if (watchDogToCheck.getCurrentStatus().equals(ServiceStatus.DOWN)) {
+                allClear = false;
+                break;
+            }
+        }
+
+        if (allClear) {
+            imageStatus.setImage(resources.get("ALL_OK"));
+            labelStatus.setText("ONLINE");
+            labelStatus.setTextFill(Paint.valueOf("#4caf50"));
+        } else {
+            imageStatus.setImage(resources.get("ALL_NOK"));
+            labelStatus.setText("DEGRADED");
+            labelStatus.setTextFill(Paint.valueOf("#f44336"));
         }
     }
 
@@ -124,11 +155,11 @@ public class MainViewController {
     void onButtonStartPauseClicked() {
         AbstractWatchDog selectedWatchDog = watchDogsTable.getSelectionModel().getSelectedItem();
         if (selectedWatchDog != null) {
-            if (selectedWatchDog.isRunning()) {
-                selectedWatchDog.cancel();
-            } else {
+            if (selectedWatchDog.getCurrentStatus().equals(ServiceStatus.PAUSED)) {
                 selectedWatchDog.reset();
                 selectedWatchDog.start();
+            } else {
+                selectedWatchDog.cancel();
             }
 
         } else {

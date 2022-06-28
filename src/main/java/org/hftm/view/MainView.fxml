@@ -85,7 +85,7 @@
                <font>
                   <Font size="20.0" />
                </font></Label>
-            <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="imageStatus" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@res/011-cloud-computing-ok.png" />
                </image>
@@ -98,7 +98,7 @@
                   <Label text="Status : " BorderPane.alignment="CENTER" />
                </left>
                <right>
-                  <Label fx:id="labelStatus" text="ALL ONLINE" textFill="#4caf50" BorderPane.alignment="CENTER">
+                  <Label fx:id="labelStatus" text="ONLINE" textFill="#4caf50" BorderPane.alignment="CENTER">
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font></Label>

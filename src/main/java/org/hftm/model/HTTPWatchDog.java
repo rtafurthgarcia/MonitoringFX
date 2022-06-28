@@ -7,6 +7,7 @@ import java.net.UnknownHostException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.net.http.HttpTimeoutException;
 import java.net.http.HttpClient.Redirect;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
@@ -81,6 +82,7 @@ public class HTTPWatchDog extends AbstractWatchDog {
     private void generateBuilder() {
         builder = HttpRequest.newBuilder();
         builder = builder.uri(URI.create(getService()));
+        builder = builder.timeout(java.time.Duration.ofMillis(getTimeout()));
         if (! getHeaders().isEmpty()) {
             builder = builder.headers(getHeaders());
         }
@@ -91,7 +93,7 @@ public class HTTPWatchDog extends AbstractWatchDog {
         super(id, service, timeout, period, maxFailures);
 
         client = HttpClient.newBuilder()
-                .connectTimeout(java.time.Duration.ofMillis(getTimeout()))
+                //.connectTimeout(java.time.Duration.ofMillis(getTimeout()))
                 .followRedirects(Redirect.NORMAL)
                 .build();
         
@@ -136,7 +138,9 @@ public class HTTPWatchDog extends AbstractWatchDog {
             } catch (ConnectException e) {
                 // when the host doesnt exist for example or when it cannot resolve
                 isReachable = false;
-            } 
+            } catch (HttpTimeoutException e) {
+                isReachable = false;
+            }
         }
 
         if (isReachable) {

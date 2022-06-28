@@ -128,9 +128,15 @@ public abstract class AbstractWatchDog extends ScheduledService {
 
         this.setCurrentStatus(ServiceStatus.UNKNOWN);
 
-        this.setOnFailed((event) -> this.setCurrentStatus(ServiceStatus.FAILED));
+        this.setOnFailed((event) -> onExceptionRaised());
         this.setOnCancelled((event) -> this.setCurrentStatus(ServiceStatus.PAUSED));
         //this.setOnReady((event) -> this.setCurrentStatus(ServiceStatus.UNKNOWN));
+
+        //tart();
+    }
+
+    private void onExceptionRaised() {
+        this.setCurrentStatus(ServiceStatus.FAILED);
     } 
 
     protected AbstractWatchDog(Integer id, String service) {
@@ -154,4 +160,9 @@ public abstract class AbstractWatchDog extends ScheduledService {
             }
         };
     }
+
+    /*@Override
+    public void start() {
+        super.start();
+    }*/
 }

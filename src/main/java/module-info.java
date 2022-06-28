@@ -4,6 +4,9 @@ module org.hftm {
     requires javafx.fxml;
     requires java.net.http;
 
+    //requires com.sun.net.httpserver;
+    //requires jdk.httpserver;
+
     requires org.dnsjava;
 
     exports org.hftm;

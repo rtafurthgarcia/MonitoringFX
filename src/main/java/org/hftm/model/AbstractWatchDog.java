@@ -6,10 +6,10 @@ import java.util.List;
 
 import org.hftm.model.HistoryRecord.ServiceStatus;
 
-import javafx.beans.property.FloatProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleFloatProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -28,7 +28,7 @@ public abstract class AbstractWatchDog extends ScheduledService {
     private StringProperty service;
     private ObjectProperty<HistoryRecord.ServiceStatus> currentStatus;
     private IntegerProperty timeout;
-    private FloatProperty uptimeSinceBeginning;
+    private DoubleProperty uptimeSinceBeginning;
     private LocalDateTime creationDateTime;
     private LinkedList<HistoryRecord> monitoringHistory;
     
@@ -74,7 +74,8 @@ public abstract class AbstractWatchDog extends ScheduledService {
             if (downCounter == 0) {
                 uptimeSinceBeginning.set(100);
             } else {
-                uptimeSinceBeginning.set((float)(downCounter / upCounter * 100.0));
+                Double rate =  (double) upCounter / (double) (upCounter + downCounter) * 100.0;
+                uptimeSinceBeginning.set(rate);
             }
         }
     }
@@ -87,16 +88,12 @@ public abstract class AbstractWatchDog extends ScheduledService {
         timeout.set(newValue);
     }
 
-    public Float getUptimeSinceBeginning() {
+    public Double getUptimeSinceBeginning() {
         return uptimeSinceBeginning.get();
     }
 
     public void setUptimeSinceBeginning(Float newValue) {
         this.uptimeSinceBeginning.set(newValue);
-    }
-
-    public FloatProperty uptimeFloatProperty(){
-        return uptimeSinceBeginning;
     }
 
     public IntegerProperty idProperty() {
@@ -114,7 +111,7 @@ public abstract class AbstractWatchDog extends ScheduledService {
         return timeout;
     }
 
-    public FloatProperty uptimeSinceBeginningProperty() {
+    public DoubleProperty uptimeSinceBeginningProperty() {
         return uptimeSinceBeginning;
     }
 
@@ -142,8 +139,8 @@ public abstract class AbstractWatchDog extends ScheduledService {
         this.id = new SimpleIntegerProperty(id);
         this.service = new SimpleStringProperty(service);
         this.timeout = new SimpleIntegerProperty(timeout);
-        this.monitoringHistory = new LinkedList<HistoryRecord>(); 
-        this.uptimeSinceBeginning = new SimpleFloatProperty(0);
+        this.monitoringHistory = new LinkedList<>(); 
+        this.uptimeSinceBeginning = new SimpleDoubleProperty(0.0);
 
         upCounter = 0;
         downCounter = 0;
@@ -176,5 +173,42 @@ public abstract class AbstractWatchDog extends ScheduledService {
                 return null;
             }
         };
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((service == null) ? 0 : service.hashCode());
+        result = prime * result + ((timeout == null) ? 0 : timeout.hashCode());
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        AbstractWatchDog other = (AbstractWatchDog) obj;
+        if (service == null) {
+            if (other.service != null)
+                return false;
+        } else if (!service.equals(other.service))
+            return false;
+        if (timeout == null) {
+            if (other.timeout != null)
+                return false;
+        } else if (!timeout.equals(other.timeout))
+            return false;
+        if (type == null) {
+            if (other.type != null)
+                return false;
+        } else if (!type.equals(other.type))
+            return false;
+        return true;
     }
 }

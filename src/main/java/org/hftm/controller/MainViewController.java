@@ -1,7 +1,5 @@
 package org.hftm.controller;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -10,21 +8,18 @@ import org.hftm.MonitoringFX;
 import org.hftm.model.AbstractWatchDog;
 import org.hftm.model.HistoryRecord;
 import org.hftm.model.HistoryRecord.ServiceStatus;
-
 import org.hftm.util.ImageResources;
-import org.xbill.DNS.tools.primary;
 
 import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Paint;
 import javafx.util.Callback;
@@ -150,12 +145,6 @@ public class MainViewController {
         labelRetries.setText("");
         labelUptime.setText("??%");
 
-        /*label.textProperty().bind(integerProperty.asString());        
-        labelSelected.textProperty().bind(currentlySelectedWatchDog.idProperty().asString());
-        labelRetries.textProperty().bind(currentlySelectedWatchDog.maximumFailureCountProperty().asString());
-        labelTimeout.textProperty().bind(currentlySelectedWatchDog.timeoutProperty().asString());
-        labelCreationDate.textProperty().bind(currentlySelectedWatchDog.getCreationDateTime().pro);**/
-
         Callback factory = new Callback<TableColumn<AbstractWatchDog, ServiceStatus>, TableCell<AbstractWatchDog, ServiceStatus>>() {
             @Override
             public TableCell<AbstractWatchDog, ServiceStatus> call(TableColumn<AbstractWatchDog, ServiceStatus> param) {
@@ -164,8 +153,6 @@ public class MainViewController {
                     public void updateItem(ServiceStatus item, boolean empty) {
                         super.updateItem(item, empty);
         
-                        //labelUptime.setText(String.valueOf(selectedWatchDog.getUptimeSinceBeginning()) + "%");
-
                         if (item == null || empty) {
                             setText(null);
                         } else {
@@ -174,23 +161,18 @@ public class MainViewController {
                             switch (item) {
                                 case UP:
                                     this.setStyle("-fx-background-color: green;-fx-text-fill: white;");    
-                                    //this.getParent().setDisable(false);
                                     break;
                                 case DOWN:
                                     this.setStyle("-fx-background-color: red;-fx-text-fill: white;");
-                                    //this.getParent().setDisable(false);
                                     break;
                                 case FAILED:
                                     this.setStyle("-fx-background-color: red;-fx-text-fill: white;");
-                                    //this.getParent().setDisable(false);
                                     break;
                                 case PAUSED:
                                     this.setStyle("-fx-background-color: blue;-fx-text-fill: white;");
-                                    //this.getParent().setDisable(true);
                                     break;
                                 default:
                                     this.setStyle("-fx-background-color: yellow;-fx-text-fill: black;");
-                                    //this.getParent().setDisable(false);
                             }
 
                         }
@@ -248,13 +230,38 @@ public class MainViewController {
 
     }
 
-    @FXML
-    void onButtonDeleteClicked() {
-
-    }
-
+    
     @FXML 
     void onButtonEditClicked() {
-
+        
+    }
+    
+    @FXML
+    void onButtonDeleteClicked() {
+        AbstractWatchDog selectedWatchDog = watchDogsTable.getSelectionModel().getSelectedItem();
+    
+        Alert alert = new Alert(
+            Alert.AlertType.WARNING, 
+            String.format("Do you want to permanently remove watchdog #%d ?", selectedWatchDog.getId()), 
+            ButtonType.YES, ButtonType.NO
+        );
+        alert.initOwner(app.getPrimaryStage());
+        alert.setTitle("Deletion confirmation");
+        
+        //Deactivate Defaultbehavior for yes-Button:
+        Button yesButton = (Button) alert.getDialogPane().lookupButton( ButtonType.YES );
+        yesButton.setDefaultButton( false );
+    
+        //Activate Defaultbehavior for no-Button:
+        Button noButton = (Button) alert.getDialogPane().lookupButton( ButtonType.NO );
+        noButton.setDefaultButton( true );
+    
+    
+        ButtonType result = alert.showAndWait().orElse(ButtonType.NO);
+         
+        if (ButtonType.YES.equals(result)) {
+            selectedWatchDog.cancel();
+            watchDogsTable.getItems().remove(selectedWatchDog);
+        }
     }
 }

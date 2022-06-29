@@ -14,6 +14,7 @@ import org.hftm.model.HistoryRecord.ServiceStatus;
 import org.hftm.util.ImageResources;
 import org.xbill.DNS.tools.primary;
 
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -79,6 +80,8 @@ public class MainViewController {
 
     private DecimalFormat uptimeFormatter;
 
+    boolean allClear;
+
     private MonitoringFX app;  
 
     public void setApp(MonitoringFX app) {
@@ -96,7 +99,7 @@ public class MainViewController {
 
     private void updateServiceState() {
         if (imageStatus != null && labelStatus != null) {
-            boolean allClear = true;
+            allClear = true;
 
             for(AbstractWatchDog watchDogToCheck: this.app.getWatchDogs()) {
                 if (watchDogToCheck.getCurrentStatus().equals(ServiceStatus.DOWN)) {
@@ -105,29 +108,33 @@ public class MainViewController {
                 }
             }
 
-            if (allClear) {
-                imageStatus.setImage(resources.get("ALL_OK"));
-                labelStatus.setText("ONLINE");
-                labelStatus.setTextFill(Paint.valueOf("#4caf50"));
-            } else {
-                imageStatus.setImage(resources.get("ALL_NOK"));
-                labelStatus.setText("DEGRADED");
-                labelStatus.setTextFill(Paint.valueOf("#f44336"));
-            }
+            // runLater() : Has to be run by the UI Thread 
+            // Otherwise ran by the Servicescheduler one
+            // https://stackoverflow.com/questions/29449297/java-lang-illegalstateexception-not-on-fx-application-thread-currentthread-t
+            Platform.runLater(() -> {
+                if (allClear) {
+                    imageStatus.setImage(resources.get("ALL_OK"));
+                    labelStatus.setText("ONLINE");
+                    labelStatus.setTextFill(Paint.valueOf("#4caf50"));
+                } else {
+                    imageStatus.setImage(resources.get("ALL_NOK"));
+                    labelStatus.setText("DEGRADED");
+                    labelStatus.setTextFill(Paint.valueOf("#f44336"));
+                }
 
+                AbstractWatchDog selectedWatchDog = watchDogsTable.getSelectionModel().getSelectedItem();
 
-            AbstractWatchDog selectedWatchDog = watchDogsTable.getSelectionModel().getSelectedItem();
-
-            if (selectedWatchDog != null) {
-                labelUptime.setText(uptimeFormatter.format(selectedWatchDog.getUptimeSinceBeginning()) + "%");
-            }
+                if (selectedWatchDog != null) {
+                    labelUptime.setText(uptimeFormatter.format(selectedWatchDog.getUptimeSinceBeginning()) + "%");
+                }
+            });
         }
     }
 
     @FXML
     public void initialize() {
         resources = new ImageResources();
-
+        allClear = true;
         uptimeFormatter = new DecimalFormat("##.##");
 
         this.idColumn.setCellValueFactory(cellData -> cellData.getValue().idProperty());

@@ -26,22 +26,22 @@ import javafx.util.Callback;
 
 public class MainViewController {
     @FXML
-    private TableView<AbstractWatchDog> watchDogsTable;
+    private TableView<AbstractWatchDog> tableWatchDogs;
 
     @FXML 
-    private TableColumn<AbstractWatchDog, Number> idColumn;
+    private TableColumn<AbstractWatchDog, Number> columnId;
 
     @FXML
-    private TableColumn<AbstractWatchDog, String> serviceColumn;
+    private TableColumn<AbstractWatchDog, String> columnService;
 
     @FXML
-    private TableColumn<AbstractWatchDog, String> typeColumn;
+    private TableColumn<AbstractWatchDog, String> columnType;
 
     @FXML
-    private TableColumn<AbstractWatchDog, HistoryRecord.ServiceStatus> statusColumn;
+    private TableColumn<AbstractWatchDog, HistoryRecord.ServiceStatus> columnStatus;
 
     @FXML
-    private TableColumn<AbstractWatchDog, Number> heartbeatColumn;
+    private TableColumn<AbstractWatchDog, Number> columnPeriod;
 
     @FXML
     private ImageView imageStartPause;
@@ -82,7 +82,7 @@ public class MainViewController {
     public void setApp(MonitoringFX app) {
         this.app = app;
 
-        this.watchDogsTable.setItems(this.app.getWatchDogs());
+        this.tableWatchDogs.setItems(this.app.getWatchDogs());
     }
 
     public void startWatchDogs() {
@@ -117,7 +117,7 @@ public class MainViewController {
                     labelStatus.setTextFill(Paint.valueOf("#f44336"));
                 }
 
-                AbstractWatchDog selectedWatchDog = watchDogsTable.getSelectionModel().getSelectedItem();
+                AbstractWatchDog selectedWatchDog = tableWatchDogs.getSelectionModel().getSelectedItem();
 
                 if (selectedWatchDog != null) {
                     labelUptime.setText(uptimeFormatter.format(selectedWatchDog.getUptimeSinceBeginning()) + "%");
@@ -132,11 +132,11 @@ public class MainViewController {
         allClear = true;
         uptimeFormatter = new DecimalFormat("##.##");
 
-        this.idColumn.setCellValueFactory(cellData -> cellData.getValue().idProperty());
-        this.serviceColumn.setCellValueFactory(cellData -> cellData.getValue().serviceProperty());
-        this.typeColumn.setCellValueFactory(cellData -> cellData.getValue().typeProperty());
-        this.statusColumn.setCellValueFactory(cellData -> cellData.getValue().currentStatusProperty());
-        this.heartbeatColumn.setCellValueFactory(cellData -> cellData.getValue().periodProperty());
+        this.columnId.setCellValueFactory(cellData -> cellData.getValue().idProperty());
+        this.columnService.setCellValueFactory(cellData -> cellData.getValue().serviceProperty());
+        this.columnType.setCellValueFactory(cellData -> cellData.getValue().typeProperty());
+        this.columnStatus.setCellValueFactory(cellData -> cellData.getValue().currentStatusProperty());
+        this.columnPeriod.setCellValueFactory(cellData -> cellData.getValue().periodProperty());
 
         labelSelected.setText("");
         labelTimeout.setText("");
@@ -182,15 +182,15 @@ public class MainViewController {
         
         };
 
-        this.statusColumn.setCellFactory(factory);
+        this.columnStatus.setCellFactory(factory);
 
-        this.watchDogsTable.getSelectionModel().selectedItemProperty()
+        this.tableWatchDogs.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> this.onSelectedWatchDog(newValue));
     }
 
     @FXML
     void onButtonStartPauseClicked() {
-        AbstractWatchDog selectedWatchDog = watchDogsTable.getSelectionModel().getSelectedItem();
+        AbstractWatchDog selectedWatchDog = tableWatchDogs.getSelectionModel().getSelectedItem();
         if (selectedWatchDog != null) {
             if (selectedWatchDog.getCurrentStatus().equals(ServiceStatus.PAUSED)) {
                 selectedWatchDog.reset();
@@ -235,33 +235,35 @@ public class MainViewController {
     void onButtonEditClicked() {
         
     }
-    
+
     @FXML
     void onButtonDeleteClicked() {
-        AbstractWatchDog selectedWatchDog = watchDogsTable.getSelectionModel().getSelectedItem();
-    
-        Alert alert = new Alert(
-            Alert.AlertType.WARNING, 
-            String.format("Do you want to permanently remove watchdog #%d ?", selectedWatchDog.getId()), 
-            ButtonType.YES, ButtonType.NO
-        );
-        alert.initOwner(app.getPrimaryStage());
-        alert.setTitle("Deletion confirmation");
+        AbstractWatchDog selectedWatchDog = tableWatchDogs.getSelectionModel().getSelectedItem();
+        if (selectedWatchDog != null) {
+            Alert alert = new Alert(
+                Alert.AlertType.WARNING, 
+                String.format("Do you want to permanently remove watchdog #%d ?", selectedWatchDog.getId()), 
+                ButtonType.YES, ButtonType.NO
+            );
+            alert.initOwner(app.getPrimaryStage());
+            alert.setTitle("Deletion confirmation");
+            
+            //Deactivate Defaultbehavior for yes-Button:
+            Button yesButton = (Button) alert.getDialogPane().lookupButton( ButtonType.YES );
+            yesButton.setDefaultButton( false );
         
-        //Deactivate Defaultbehavior for yes-Button:
-        Button yesButton = (Button) alert.getDialogPane().lookupButton( ButtonType.YES );
-        yesButton.setDefaultButton( false );
-    
-        //Activate Defaultbehavior for no-Button:
-        Button noButton = (Button) alert.getDialogPane().lookupButton( ButtonType.NO );
-        noButton.setDefaultButton( true );
-    
-    
-        ButtonType result = alert.showAndWait().orElse(ButtonType.NO);
-         
-        if (ButtonType.YES.equals(result)) {
-            selectedWatchDog.cancel();
-            watchDogsTable.getItems().remove(selectedWatchDog);
+            //Activate Defaultbehavior for no-Button:
+            Button noButton = (Button) alert.getDialogPane().lookupButton( ButtonType.NO );
+            noButton.setDefaultButton( true );
+        
+            ButtonType result = alert.showAndWait().orElse(ButtonType.NO);
+                
+            if (ButtonType.YES.equals(result)) {
+                selectedWatchDog.cancel();
+                tableWatchDogs.getItems().remove(selectedWatchDog);
+            }
+
+            tableWatchDogs.refresh();
         }
     }
 }

@@ -227,13 +227,13 @@ public class MainViewController {
 
     @FXML
     void onButtonAddClicked() {
-
+        this.app.showEditView(null);
     }
 
     
     @FXML 
     void onButtonEditClicked() {
-        
+        this.app.showEditView(tableWatchDogs.getSelectionModel().getSelectedItem());
     }
 
     @FXML

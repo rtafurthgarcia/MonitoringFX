@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.nio.file.Paths;
 
+import org.hftm.controller.EditViewController;
 import org.hftm.controller.MainViewController;
 import org.hftm.model.*;
 import org.xbill.DNS.*;
@@ -12,6 +13,7 @@ import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -21,6 +23,7 @@ import javafx.stage.Stage;
 public class MonitoringFX extends Application {
 
     private Stage primaryStage;
+    private Stage editViewStage;
 
     private ObservableList<AbstractWatchDog> watchDogs = FXCollections.observableArrayList();
 
@@ -31,6 +34,10 @@ public class MonitoringFX extends Application {
     public Stage getPrimaryStage() {
 		return this.primaryStage;
 	}
+
+    public Stage getEditViewStage() {
+        return this.editViewStage;
+    }
 
     public MonitoringFX() {
         try {
@@ -70,6 +77,31 @@ public class MonitoringFX extends Application {
             
             controller.startWatchDogs();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showEditView(AbstractWatchDog watchDog) {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(MonitoringFX.class.getResource(Paths.get("view", "EditView.fxml").toString()));
+            Scene scene = new Scene(loader.load(), 600, 320);
+            
+            editViewStage = new Stage();
+            
+            if (watchDog != null) {
+                editViewStage.setTitle("MonitoringFX: editing watchdog #" + watchDog.getId());
+            } else {
+                editViewStage.setTitle("MonitoringFX: new watchdog");
+            }
+            editViewStage.setScene(scene);
+            editViewStage.show();
+            
+            
+            EditViewController controller = loader.getController();
+            controller.setApp(this);
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
     }

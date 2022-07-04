@@ -218,7 +218,7 @@ public class MainViewController {
         }
 
         labelSelected.setText("Selected: #" + selectedWatchDog.getId().toString());
-        labelTimeout.setText(selectedWatchDog.getTimeout().toString() + "ms");
+        labelTimeout.setText(selectedWatchDog.getTimeout().toMillis() + "ms");
         labelCreationDate.setText(selectedWatchDog.getCreationDateTime().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)));
         labelCreationTime.setText(selectedWatchDog.getCreationDateTime().format(DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM)));
         labelRetries.setText(String.valueOf(selectedWatchDog.getMaximumFailureCount()));

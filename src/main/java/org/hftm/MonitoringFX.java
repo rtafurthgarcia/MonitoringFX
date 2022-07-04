@@ -27,6 +27,8 @@ public class MonitoringFX extends Application {
     private Stage primaryStage;
     private Stage editViewStage;
 
+    EditViewController editViewController;
+
     private ObservableList<AbstractWatchDog> watchDogs = FXCollections.observableArrayList();
 
     public ObservableList<AbstractWatchDog> getWatchDogs() {
@@ -91,20 +93,18 @@ public class MonitoringFX extends Application {
             editViewStage = new Stage();
             editViewStage.setResizable(false);
             
-            if (watchDog != null) {
-                editViewStage.setTitle("MonitoringFX: editing watchdog #" + watchDog.getId());
-            } else {
-                editViewStage.setTitle("MonitoringFX: new watchdog");
-            }
+            editViewStage.setTitle("MonitoringFX: watchdog");
             editViewStage.setScene(scene);
             editViewStage.show();
             
-            EditViewController controller = loader.getController();
-            controller.setStage(editViewStage);
-            controller.setApp(this);
+            editViewController = loader.getController();
+            editViewController.setStage(editViewStage);
+            editViewController.setApp(this);
 
             if (watchDog != null) {
-                controller.setWatchDog(watchDog);
+                editViewController.setWatchDog(watchDog);
+            } else {
+                editViewController.setNewId(getWatchDogs().size() + 1);
             }
         }
         catch (IOException e) {

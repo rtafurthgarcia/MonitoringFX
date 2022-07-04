@@ -21,6 +21,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
 
@@ -113,30 +114,6 @@ public class EditViewController {
         });**/
     }
 
-    // couldnt find how to remove a row so I had to invoke the Gods of SO
-    // https://stackoverflow.com/questions/40516514/remove-a-row-from-a-gridpane
-    private void deleteRow(final int row) {
-        Set<Node> deleteNodes = new HashSet<>();
-        for (Node child : gridpane.getChildren()) {
-            // get index from child
-            Integer rowIndex = GridPane.getRowIndex(child);
-    
-            // handle null values for index=0
-            int r = rowIndex == null ? 0 : rowIndex;
-    
-            if (r > row) {
-                // decrement rows for rows after the deleted row
-                GridPane.setRowIndex(child, r-1);
-            } else if (r == row) {
-                // collect matching rows for deletion
-                deleteNodes.add(child);
-            }
-        }
-    
-        // remove nodes from row
-        gridpane.getChildren().removeAll(deleteNodes);
-    }
-
     public void setWatchDog(AbstractWatchDog watchDog) {
         this.watchDog = watchDog;
 
@@ -149,42 +126,138 @@ public class EditViewController {
         comboboxPeriod.getSelectionModel().select(DurationType.MILISECONDS);
 
         if (watchDog instanceof DNSRecordWatchDog) {
-            DNSRecordWatchDog dnsRecordWatchDog = (DNSRecordWatchDog) this.watchDog;
-
-            comboboxType.getSelectionModel().select(WatchDogType.DNS);
-            
-            comboboxGeneric1.setItems(FXCollections.observableArrayList(DNSRecordType.values()));
-            comboboxGeneric1.getSelectionModel().select(dnsRecordWatchDog.getRecordType());
-
-            labelGeneric1.setText("Resolver");
-            labelGeneric3.setText("DNS Record");
-
-            textareaGeneric1.setText(dnsRecordWatchDog.getResolver().getAddress().getHostString());
-
-            deleteRow(6);
-
+            setType(WatchDogType.DNS);
         } else if (watchDog instanceof HTTPWatchDog) {
-            HTTPWatchDog httpWatchDog = (HTTPWatchDog) this.watchDog;
-
-            comboboxType.getSelectionModel().select(WatchDogType.HTTP);
-
-            labelGeneric1.setText("Body");
-            labelGeneric2.setText("Headers");
-            labelGeneric3.setText("Request type");
-
-            textareaGeneric1.setText(httpWatchDog.getBody());
-            textareaGeneric2.setText(httpWatchDog.getHeaders());
-
-            stage.setHeight(600);
-            stage.setWidth(840);
-
-            comboboxGeneric1.setItems(FXCollections.observableArrayList(RequestType.values()));
-            comboboxGeneric1.getSelectionModel().select(httpWatchDog.getRequestType());
+            setType(WatchDogType.HTTP);
         } else if (watchDog instanceof PingWatchDog) {
-            comboboxType.getSelectionModel().select(WatchDogType.PING);
-        } else {
-            comboboxType.getSelectionModel().select(WatchDogType.TCP);
+            setType(WatchDogType.PING);
+        } else if (watchDog instanceof TCPWatchDog) {
+            setType(WatchDogType.TCP);
         }
+
+        comboboxType.setDisable(true);
+    }
+
+    private void setType(WatchDogType type) {
+        setDefaultValues();
+
+        switch (type) {
+            case DNS:
+                comboboxType.getSelectionModel().select(WatchDogType.DNS);
+                
+                comboboxGeneric1.setItems(FXCollections.observableArrayList(DNSRecordType.values()));
+                comboboxGeneric1.getSelectionModel().select(DNSRecordType.ANY);
+
+                labelGeneric1.setText("Resolver");
+                labelGeneric3.setText("DNS Record");
+
+                textareaGeneric1.setPromptText((DNSRecordWatchDog.DEFAULT_RESOLVER));
+                
+                labelGeneric1.setVisible(true);
+                labelGeneric3.setVisible(true);
+                textareaGeneric1.setVisible(true);
+                comboboxGeneric1.setVisible(true);
+                rowconstraints1.setMinHeight(54);
+                rowconstraints3.setMinHeight(27);
+                rowconstraints1.setMaxHeight(54);
+                rowconstraints3.setMaxHeight(27);
+
+                
+                if (this.watchDog != null) {
+                    DNSRecordWatchDog dnsRecordWatchDog = (DNSRecordWatchDog) this.watchDog;
+                    
+                    textareaGeneric1.setText(dnsRecordWatchDog.getResolver().getAddress().getHostString());
+                    comboboxGeneric1.getSelectionModel().select(dnsRecordWatchDog.getRecordType());
+                }
+
+                break;
+        
+            case HTTP:
+            
+                comboboxType.getSelectionModel().select(WatchDogType.HTTP);
+
+                labelGeneric1.setText("Body");
+                labelGeneric2.setText("Headers");
+                labelGeneric3.setText("Request type");
+                
+                labelGeneric1.setVisible(true);
+                labelGeneric2.setVisible(true);
+                labelGeneric3.setVisible(true);
+                textareaGeneric1.setVisible(true);
+                textareaGeneric2.setVisible(true);
+                comboboxGeneric1.setVisible(true);
+                
+                rowconstraints1.setMinHeight(100);
+                rowconstraints2.setMinHeight(100);
+                rowconstraints3.setMinHeight(27);
+                rowconstraints1.setMaxHeight(100);
+                rowconstraints2.setMaxHeight(100);
+                rowconstraints3.setMaxHeight(27);
+
+                comboboxGeneric1.setItems(FXCollections.observableArrayList(RequestType.values()));
+                comboboxGeneric1.getSelectionModel().select(RequestType.GET);
+                
+                if (this.watchDog != null) {
+                    HTTPWatchDog httpWatchDog = (HTTPWatchDog) this.watchDog;
+                    
+                    textareaGeneric1.setText(httpWatchDog.getBody());
+                    textareaGeneric2.setText(httpWatchDog.getHeaders());
+                    
+                    comboboxGeneric1.getSelectionModel().select(httpWatchDog.getRequestType());
+                }
+                
+                stage.setHeight(505);
+                stage.setWidth(600);
+
+                break;
+            case PING:
+                comboboxType.getSelectionModel().select(WatchDogType.PING);
+
+                stage.setHeight(305);
+
+                break;
+            default:
+                comboboxType.getSelectionModel().select(WatchDogType.TCP);
+
+                labelGeneric1.setText("Port");
+                textareaGeneric1.setText(String.valueOf(TCPWatchDog.DEFAULT_PORT));
+                
+                labelGeneric1.setVisible(true);
+                textareaGeneric1.setVisible(true);
+                rowconstraints1.setMinHeight(54);
+                rowconstraints1.setMaxHeight(54);
+
+                if (this.watchDog != null) {
+                    TCPWatchDog tcpWatchDog = (TCPWatchDog) this.watchDog;
+
+                    textareaGeneric1.setText(String.valueOf(tcpWatchDog.getPort()));
+                }
+
+                break;
+        }
+    }
+
+    private void setDefaultValues() {
+
+        if (stage != null) {
+            stage.setHeight(360);
+            stage.setWidth(600);
+        }
+
+        labelGeneric1.setVisible(false);
+        labelGeneric2.setVisible(false);
+        labelGeneric3.setVisible(false);
+        textareaGeneric1.setVisible(false);
+        textareaGeneric2.setVisible(false);
+        comboboxGeneric1.setVisible(false);
+        rowconstraints1.setMaxHeight(0);
+        rowconstraints2.setMaxHeight(0);
+        rowconstraints2.setMaxHeight(0);
+        rowconstraints1.setMinHeight(0);
+        rowconstraints2.setMinHeight(0);
+        rowconstraints2.setMinHeight(0);
+        textareaGeneric1.setText("");
+        textareaGeneric2.setText("");
     }
 
     /**
@@ -202,6 +275,11 @@ public class EditViewController {
 
         textareaGeneric1.setWrapText(true);
         textareaGeneric2.setWrapText(true);
+
+        setDefaultValues();
+
+        comboboxType.getSelectionModel().selectedItemProperty()
+                .addListener((observable, oldValue, newValue) -> this.setType(newValue));
     }
 
     @FXML
@@ -211,6 +289,6 @@ public class EditViewController {
 
     @FXML
     public void onButtonCancelClicked() {
-        
+        this.stage.close();
     }
 }

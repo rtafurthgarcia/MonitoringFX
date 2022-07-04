@@ -16,6 +16,8 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class TCPWatchDog extends AbstractWatchDog {
 
+    public static final Integer DEFAULT_PORT = 80;
+
     private IntegerProperty port;
 
     public Integer getPort() {

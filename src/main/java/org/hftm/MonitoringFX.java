@@ -86,10 +86,10 @@ public class MonitoringFX extends Application {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(MonitoringFX.class.getResource(Paths.get("view", "EditView.fxml").toString()));
-            Scene scene = new Scene(loader.load());
+            Scene scene = new Scene(loader.load(), 600, 270);
             
             editViewStage = new Stage();
-            //editViewStage.setResizable(false);
+            editViewStage.setResizable(false);
             
             if (watchDog != null) {
                 editViewStage.setTitle("MonitoringFX: editing watchdog #" + watchDog.getId());

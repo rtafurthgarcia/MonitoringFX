@@ -16,6 +16,7 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class DNSRecordWatchDog extends AbstractWatchDog {
 
+    public static final String DEFAULT_RESOLVER = "1.1.1.1";
     private ObjectProperty<SimpleResolver> resolver;
     private ObjectProperty<DNSRecordType> recordType;
 
@@ -46,7 +47,7 @@ public class DNSRecordWatchDog extends AbstractWatchDog {
     public DNSRecordWatchDog(Integer id, String service, Duration timeout, Duration period, Integer maxFailures) throws UnknownHostException {
         super(id, service, timeout, period, maxFailures);
 
-        this.resolver = new SimpleObjectProperty<>(new SimpleResolver("1.1.1.1"));
+        this.resolver = new SimpleObjectProperty<>(new SimpleResolver(DEFAULT_RESOLVER));
         this.recordType = new SimpleObjectProperty<>(DNSRecordType.ANY);
         setTypeProperty();
     }

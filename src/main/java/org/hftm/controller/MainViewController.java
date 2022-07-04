@@ -11,6 +11,7 @@ import org.hftm.util.ImageResources;
 import org.hftm.util.HistoryRecord.ServiceStatus;
 
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -19,8 +20,10 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Paint;
 import javafx.util.Callback;
 
@@ -145,6 +148,7 @@ public class MainViewController {
         labelRetries.setText("");
         labelUptime.setText("??%");
 
+        // Depending on the watchdog state, color the cell differently
         Callback factory = new Callback<TableColumn<AbstractWatchDog, ServiceStatus>, TableCell<AbstractWatchDog, ServiceStatus>>() {
             @Override
             public TableCell<AbstractWatchDog, ServiceStatus> call(TableColumn<AbstractWatchDog, ServiceStatus> param) {
@@ -186,6 +190,16 @@ public class MainViewController {
 
         this.tableWatchDogs.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> this.onSelectedWatchDog(newValue));
+
+        /*tableWatchDogs.setRowFactory(tv -> {
+            TableRow<AbstractWatchDog> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+                    onSelectedWatchDog(row.getItem());
+                }
+            });
+            return row ;
+        });*/
     }
 
     @FXML

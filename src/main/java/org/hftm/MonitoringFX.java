@@ -47,7 +47,7 @@ public class MonitoringFX extends Application {
         try {
             watchDogs.add(new PingWatchDog(1, "1.1.1.1"));
             watchDogs.add(new HTTPWatchDog(2, "https://hftm.ch", RequestType.GET, "", ""));
-            watchDogs.add(new DNSRecordWatchDog(3, "hftm.ch", DNSRecordType.ANY, new SimpleResolver("1.1.1.1")));   
+            watchDogs.add(new DNSRecordWatchDog(3, "hftm.ch", DNSRecordType.A, new SimpleResolver("1.1.1.1")));   
         } catch (Exception e) {
             //TODO: handle exception
         }

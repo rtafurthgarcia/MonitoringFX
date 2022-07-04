@@ -251,6 +251,21 @@ public class MainViewController {
     }
 
     @FXML
+    void onClose() {
+        this.app.getPrimaryStage().close();
+    }
+
+    @FXML
+    void onAbout() {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("About");
+        alert.setHeaderText(null);
+        alert.setContentText("Made with great care by Richard Tafurth-Garcia less than 48h before the due date ♥");
+
+        alert.showAndWait();
+    }
+
+    @FXML
     void onButtonDeleteClicked() {
         AbstractWatchDog selectedWatchDog = tableWatchDogs.getSelectionModel().getSelectedItem();
         if (selectedWatchDog != null) {

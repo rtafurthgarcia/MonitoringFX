@@ -16,18 +16,19 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
-import javafx.util.Duration;
+import java.time.Duration;
 
 public abstract class AbstractWatchDog extends ScheduledService {
 
-    protected static final Integer DEFAULT_TIMEOUT = 2000;
     protected static final Integer DEFAULT_MAX_FAILURE = 3;
-    protected static final Duration DEFAULT_PERIOD = new Duration(15000);
+    // Difference between javafx.util and java.time -> im just trying to make it make sense lol
+    protected static final Duration DEFAULT_TIMEOUT = Duration.ofMillis(2000);
+    protected static final Duration DEFAULT_PERIOD = Duration.ofMillis(15000);
 
     private IntegerProperty id;
     private StringProperty service;
     private ObjectProperty<HistoryRecord.ServiceStatus> currentStatus;
-    private IntegerProperty timeout;
+    private ObjectProperty<Duration> timeout;
     private DoubleProperty uptimeSinceBeginning;
     private LocalDateTime creationDateTime;
     private LinkedList<HistoryRecord> monitoringHistory;
@@ -80,11 +81,11 @@ public abstract class AbstractWatchDog extends ScheduledService {
         }
     }
 
-    public Integer getTimeout() {
+    public Duration getTimeout() {
         return timeout.get();
     }
 
-    public void setTimeout(Integer newValue) {
+    public void setTimeout(Duration newValue) {
         timeout.set(newValue);
     }
 
@@ -107,7 +108,7 @@ public abstract class AbstractWatchDog extends ScheduledService {
         return currentStatus;
     }
     
-    public IntegerProperty timeoutProperty() {
+    public ObjectProperty<Duration> timeoutProperty() {
         return timeout;
     }
 
@@ -130,17 +131,18 @@ public abstract class AbstractWatchDog extends ScheduledService {
         return monitoringHistory;
     }
 
-    protected AbstractWatchDog(Integer id, String service, Integer timeout, Duration period, Integer maxFailures) {
+    protected AbstractWatchDog(Integer id, String service, Duration timeout, Duration period, Integer maxFailures) {
         super();
-        super.setPeriod(period);
+        super.setPeriod(javafx.util.Duration.millis(period.toMillis()));
         super.setMaximumFailureCount(maxFailures);
-        super.setDelay(Duration.seconds(3));
+        super.setDelay(javafx.util.Duration.seconds(3));
 
         this.id = new SimpleIntegerProperty(id);
         this.service = new SimpleStringProperty(service);
-        this.timeout = new SimpleIntegerProperty(timeout);
         this.monitoringHistory = new LinkedList<>(); 
         this.uptimeSinceBeginning = new SimpleDoubleProperty(0.0);
+        this.timeout = new SimpleObjectProperty<Duration>(timeout);
+
 
         upCounter = 0;
         downCounter = 0;

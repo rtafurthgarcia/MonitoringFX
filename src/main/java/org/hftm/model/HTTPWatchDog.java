@@ -11,7 +11,7 @@ import java.net.http.HttpTimeoutException;
 import java.net.http.HttpClient.Redirect;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
-import javafx.util.Duration;
+import java.time.Duration;
 
 import org.hftm.model.HistoryRecord.ServiceStatus;
 
@@ -82,14 +82,14 @@ public class HTTPWatchDog extends AbstractWatchDog {
     private void generateBuilder() {
         builder = HttpRequest.newBuilder();
         builder = builder.uri(URI.create(getService()));
-        builder = builder.timeout(java.time.Duration.ofMillis(getTimeout()));
+        builder = builder.timeout(getTimeout());
         if (! getHeaders().isEmpty()) {
             builder = builder.headers(getHeaders());
         }
         builder.method(getRequestType().name(), BodyPublishers.ofString(getBody()));
     }
 
-    public HTTPWatchDog(Integer id, String service, Integer timeout, Duration period, Integer maxFailures) throws UnknownHostException {
+    public HTTPWatchDog(Integer id, String service, Duration timeout, Duration period, Integer maxFailures) throws UnknownHostException {
         super(id, service, timeout, period, maxFailures);
 
         client = HttpClient.newBuilder()

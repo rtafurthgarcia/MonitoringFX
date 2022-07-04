@@ -43,6 +43,7 @@ public class TCPWatchDog extends AbstractWatchDog {
         for (Integer count = getMaximumFailureCount(); count > 0; count--) {
             try {
                 Socket clientSocket = new Socket(getService(), getPort());
+                clientSocket.setSoTimeout(getTimeout().toMillisPart());
                 PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 

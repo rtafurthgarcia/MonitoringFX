@@ -9,11 +9,11 @@ import org.hftm.util.OsDetectionUtil;
 import org.hftm.util.OsDetectionUtil.OperatingSystemType;
 
 import javafx.beans.property.SimpleStringProperty;
-import javafx.util.Duration;;
+import java.time.Duration;
 
 public class PingWatchDog extends AbstractWatchDog {
 
-    public PingWatchDog(Integer id, String service, Integer timeout, Duration period, Integer maxFailures) {
+    public PingWatchDog(Integer id, String service, Duration timeout, Duration period, Integer maxFailures) {
         super(id, service, timeout, period, maxFailures);
         setTypeProperty();
     } 
@@ -35,9 +35,9 @@ public class PingWatchDog extends AbstractWatchDog {
         InetAddress.getAllByName(getService());
 
         if (operatingSystemType == OperatingSystemType.WINDOWS) {
-            pingCmd = String.format("ping /n 1 /w %d %s", getTimeout(), getService());
+            pingCmd = String.format("ping /n 1 /w %d %s", getTimeout().toMillisPart(), getService());
         } else {
-            pingCmd = String.format("ping -c 1 -W %d %s", getTimeout(), getService());
+            pingCmd = String.format("ping -c 1 -W %d %s", getTimeout().toMillisPart(), getService());
         }
 
         for (Integer count = getMaximumFailureCount(); count > 0; count--) {

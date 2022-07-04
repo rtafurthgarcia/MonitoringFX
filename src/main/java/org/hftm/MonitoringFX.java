@@ -85,7 +85,7 @@ public class MonitoringFX extends Application {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(MonitoringFX.class.getResource(Paths.get("view", "EditView.fxml").toString()));
-            Scene scene = new Scene(loader.load(), 600, 320);
+            Scene scene = new Scene(loader.load(), 600, 360);
             
             editViewStage = new Stage();
             
@@ -100,6 +100,7 @@ public class MonitoringFX extends Application {
             
             EditViewController controller = loader.getController();
             controller.setApp(this);
+            controller.setWatchDog(watchDog);
         }
         catch (IOException e) {
             e.printStackTrace();

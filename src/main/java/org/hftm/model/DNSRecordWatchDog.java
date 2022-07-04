@@ -1,7 +1,7 @@
 package org.hftm.model;
 
 import java.net.UnknownHostException;
-import javafx.util.Duration;
+import java.time.Duration;
 
 import org.hftm.model.HistoryRecord.ServiceStatus;
 import org.xbill.DNS.*;
@@ -41,7 +41,7 @@ public class DNSRecordWatchDog extends AbstractWatchDog {
         return recordType;
     }
 
-    public DNSRecordWatchDog(Integer id, String service, Integer timeout, Duration period, Integer maxFailures) throws UnknownHostException {
+    public DNSRecordWatchDog(Integer id, String service, Duration timeout, Duration period, Integer maxFailures) throws UnknownHostException {
         super(id, service, timeout, period, maxFailures);
 
         this.resolver = new SimpleObjectProperty<>(new SimpleResolver("1.1.1.1"));
@@ -54,7 +54,7 @@ public class DNSRecordWatchDog extends AbstractWatchDog {
 
         this.recordType.set(recordType);
         this.resolver.set(resolver);
-        this.resolver.get().setTimeout(java.time.Duration.ofMillis(getTimeout()));
+        this.resolver.get().setTimeout(getTimeout());
     }
 
     @Override

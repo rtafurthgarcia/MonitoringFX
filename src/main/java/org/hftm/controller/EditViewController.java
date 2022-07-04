@@ -1,20 +1,19 @@
 package org.hftm.controller;
 
-import java.util.HashMap;
-
 import org.hftm.MonitoringFX;
 import org.hftm.model.AbstractWatchDog;
-import org.xbill.DNS.tools.primary;
+import org.hftm.model.DNSRecordWatchDog;
+import org.hftm.model.HTTPWatchDog;
+import org.hftm.model.PingWatchDog;
+import org.hftm.model.TCPWatchDog;
 
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.text.Text;
-import javafx.util.Duration;
+import javafx.scene.layout.RowConstraints;
+import java.time.Duration;
 
 public class EditViewController {
 
@@ -60,19 +59,60 @@ public class EditViewController {
     TextField textfieldGeneric2;
 
     @FXML
+    ComboBox<String> comboboxGeneric1;
+
+    @FXML
     Label labelGeneric1;
 
     @FXML
     Label labelGeneric2;
 
+    @FXML
+    Label labelGeneric3;
+
+    @FXML
+    RowConstraints rowconstraints1;
+
+    @FXML
+    RowConstraints rowconstraints2;
+
+    @FXML
+    RowConstraints rowconstraints3;
+
     private MonitoringFX app;  
+
+    private AbstractWatchDog watchDog;
 
     public void setApp(MonitoringFX app) {
         this.app = app;
     }
 
     public void setWatchDog(AbstractWatchDog watchDog) {
+        this.watchDog = watchDog;
 
+        textfieldService.setText(this.watchDog.getService());
+        textfieldPeriod.setText(this.watchDog.getPeriod().toString());
+        textfieldTimeout.setText(String.valueOf(this.watchDog.getTimeout().toMillisPart()));
+        textfieldRetries.setText(String.valueOf(this.watchDog.getMaximumFailureCount()));
+
+        if (watchDog instanceof DNSRecordWatchDog) {
+            comboboxType.getSelectionModel().select(WatchDogTypes.DNS);
+        } else if (watchDog instanceof HTTPWatchDog) {
+            comboboxType.getSelectionModel().select(WatchDogTypes.HTTP);
+        } else if (watchDog instanceof PingWatchDog) {
+            comboboxType.getSelectionModel().select(WatchDogTypes.PING);
+        } else {
+            comboboxType.getSelectionModel().select(WatchDogTypes.TCP);
+        }
+
+        /*if (watchDogClass.equals(DNSRecordWatchDog)) {
+            labelGeneric1.setText("Resolver");
+            labelGeneric3.setText("Record type");
+
+            rowconstraints2.maxHeightProperty().set(0);
+
+
+        }*/
     }
 
     /**

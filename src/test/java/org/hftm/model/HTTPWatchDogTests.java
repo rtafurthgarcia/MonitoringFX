@@ -81,7 +81,7 @@ public class HTTPWatchDogTests {
                 waiter.countDown();
             });
         });
-        waiter.await((long)HTTPWatchDog.DEFAULT_TIMEOUT, TimeUnit.MILLISECONDS);
+        waiter.await(HTTPWatchDog.DEFAULT_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
         assertEquals(HistoryRecord.ServiceStatus.UNKNOWN, watchDog.getCurrentStatus());
 
         waiter = new CountDownLatch(1);
@@ -96,7 +96,7 @@ public class HTTPWatchDogTests {
                 waiter.countDown();
             }
         });
-        waiter.await((long)watchDog.getTimeout() * 2, TimeUnit.MILLISECONDS);
+        waiter.await(watchDog.getTimeout().toMillis() * 2, TimeUnit.MILLISECONDS);
     
         assertEquals(4, watchDog.getMonitoringHistory().size());
         assertEquals(0, waiter.getCount());

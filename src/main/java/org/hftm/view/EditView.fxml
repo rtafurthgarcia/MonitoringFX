@@ -20,7 +20,7 @@
    <content>
       <VBox prefHeight="240.0" prefWidth="600.0">
          <children>
-            <GridPane vgap="4.0">
+            <GridPane fx:id="gridpane" vgap="4.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -33,6 +33,7 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints fx:id="rowconstraints1" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints fx:id="rowconstraints2" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints fx:id="rowconstraints3" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
                   <Label text="Service" />
@@ -59,6 +60,8 @@
                   <Label fx:id="labelGeneric2" text="Generic" GridPane.rowIndex="6" />
                   <TextField fx:id="textfieldGeneric1" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                   <TextField fx:id="textfieldGeneric2" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                  <Label fx:id="labelGeneric3" text="Generic" GridPane.rowIndex="7" />
+                  <ComboBox fx:id="comboboxGeneric1" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                </children>
             </GridPane>
             <ButtonBar prefHeight="40.0" prefWidth="200.0">

@@ -8,6 +8,7 @@ import org.hftm.model.PingWatchDog;
 import org.hftm.model.TCPWatchDog;
 import org.hftm.util.DNSRecordType;
 import org.hftm.util.DurationType;
+import org.hftm.util.RequestType;
 import org.hftm.util.WatchDogType;
 
 import javafx.collections.FXCollections;
@@ -16,9 +17,13 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.stage.Stage;
+
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.Set;
@@ -49,13 +54,13 @@ public class EditViewController {
     TextField textfieldRetries;
 
     @FXML
-    TextField textfieldGeneric1;
+    TextArea textareaGeneric1;
 
     @FXML
-    TextField textfieldGeneric2;
+    TextArea textareaGeneric2;
 
     @FXML
-    ComboBox<DNSRecordType> comboboxGeneric1;
+    ComboBox comboboxGeneric1;
 
     @FXML
     Label labelGeneric1;
@@ -80,10 +85,32 @@ public class EditViewController {
 
     private MonitoringFX app;  
 
+    private Stage stage;
+
     private AbstractWatchDog watchDog;
 
     public void setApp(MonitoringFX app) {
         this.app = app;
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+
+        /**this.stage.widthProperty().addListener((o, oldValue, newValue) -> {
+            if(newValue.intValue() < 600.0) {
+                this.stage.setResizable(false);
+                this.stage.setWidth(600);
+                this.stage.setResizable(true);
+            }
+        });
+
+        this.stage.heightProperty().addListener((o, oldValue, newValue) -> {
+            if(newValue.intValue() < 600.0) {
+                this.stage.setResizable(false);
+                this.stage.setHeight(600);
+                this.stage.setResizable(true);
+            }
+        });**/
     }
 
     // couldnt find how to remove a row so I had to invoke the Gods of SO
@@ -132,26 +159,32 @@ public class EditViewController {
             labelGeneric1.setText("Resolver");
             labelGeneric3.setText("DNS Record");
 
-            textfieldGeneric1.setText(dnsRecordWatchDog.getResolver().getAddress().getHostString());
+            textareaGeneric1.setText(dnsRecordWatchDog.getResolver().getAddress().getHostString());
 
             deleteRow(6);
 
         } else if (watchDog instanceof HTTPWatchDog) {
+            HTTPWatchDog httpWatchDog = (HTTPWatchDog) this.watchDog;
+
             comboboxType.getSelectionModel().select(WatchDogType.HTTP);
+
+            labelGeneric1.setText("Body");
+            labelGeneric2.setText("Headers");
+            labelGeneric3.setText("Request type");
+
+            textareaGeneric1.setText(httpWatchDog.getBody());
+            textareaGeneric2.setText(httpWatchDog.getHeaders());
+
+            stage.setHeight(600);
+            stage.setWidth(840);
+
+            comboboxGeneric1.setItems(FXCollections.observableArrayList(RequestType.values()));
+            comboboxGeneric1.getSelectionModel().select(httpWatchDog.getRequestType());
         } else if (watchDog instanceof PingWatchDog) {
             comboboxType.getSelectionModel().select(WatchDogType.PING);
         } else {
             comboboxType.getSelectionModel().select(WatchDogType.TCP);
         }
-
-        /*if (watchDogClass.equals(DNSRecordWatchDog)) {
-            labelGeneric1.setText("Resolver");
-            labelGeneric3.setText("Record type");
-
-            rowconstraints2.maxHeightProperty().set(0);
-
-
-        }*/
     }
 
     /**
@@ -166,6 +199,9 @@ public class EditViewController {
         comboboxType.setPromptText("Select a watchdog type");
         comboboxTimeout.getSelectionModel().select(DurationType.MILISECONDS);
         comboboxPeriod.getSelectionModel().select(DurationType.MILISECONDS);
+
+        textareaGeneric1.setWrapText(true);
+        textareaGeneric2.setWrapText(true);
     }
 
     @FXML

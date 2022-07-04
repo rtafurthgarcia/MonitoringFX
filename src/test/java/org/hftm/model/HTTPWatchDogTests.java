@@ -10,6 +10,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.hftm.util.HistoryRecord;
+import org.hftm.util.RequestType;
 import org.junit.jupiter.api.Test;
 
 import javafx.application.Platform;
@@ -24,7 +25,7 @@ public class HTTPWatchDogTests {
 
 	@Test
     void CheckBasicSites() throws Exception {
-        watchDog = new HTTPWatchDog(1, "https://www.hftm.ch", HTTPWatchDog.RequestType.GET, "", "");
+        watchDog = new HTTPWatchDog(1, "https://www.hftm.ch", RequestType.GET, "", "");
         assertEquals(HistoryRecord.ServiceStatus.UNKNOWN, watchDog.getCurrentStatus());
 
         watchDog.checkServiceAvailability();
@@ -35,7 +36,7 @@ public class HTTPWatchDogTests {
     
     @Test
     void CheckUnaccessibleWebsites() throws Exception {
-        watchDog = new HTTPWatchDog(1, "https://does.not.exist.google.com", HTTPWatchDog.RequestType.GET, "", "");
+        watchDog = new HTTPWatchDog(1, "https://does.not.exist.google.com", RequestType.GET, "", "");
         assertEquals(HistoryRecord.ServiceStatus.UNKNOWN, watchDog.getCurrentStatus());
 
         watchDog.checkServiceAvailability();
@@ -78,7 +79,7 @@ public class HTTPWatchDogTests {
 
         Platform.startup(() -> {
             assertDoesNotThrow(() -> {
-                watchDog = new HTTPWatchDog(1, "http://127.0.0.1:8080/test", HTTPWatchDog.RequestType.GET, "", "");
+                watchDog = new HTTPWatchDog(1, "http://127.0.0.1:8080/test", RequestType.GET, "", "");
                 waiter.countDown();
             });
         });

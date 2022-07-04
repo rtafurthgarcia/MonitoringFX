@@ -8,6 +8,7 @@ import org.hftm.controller.EditViewController;
 import org.hftm.controller.MainViewController;
 import org.hftm.model.*;
 import org.hftm.util.DNSRecordType;
+import org.hftm.util.RequestType;
 import org.xbill.DNS.*;
 
 import javafx.application.Application;
@@ -43,7 +44,7 @@ public class MonitoringFX extends Application {
     public MonitoringFX() {
         try {
             watchDogs.add(new PingWatchDog(1, "1.1.1.1"));
-            watchDogs.add(new HTTPWatchDog(2, "https://hftm.ch", HTTPWatchDog.RequestType.GET, "", ""));
+            watchDogs.add(new HTTPWatchDog(2, "https://hftm.ch", RequestType.GET, "", ""));
             watchDogs.add(new DNSRecordWatchDog(3, "hftm.ch", DNSRecordType.ANY, new SimpleResolver("1.1.1.1")));   
         } catch (Exception e) {
             //TODO: handle exception
@@ -85,9 +86,10 @@ public class MonitoringFX extends Application {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(MonitoringFX.class.getResource(Paths.get("view", "EditView.fxml").toString()));
-            Scene scene = new Scene(loader.load(), 600, 360);
+            Scene scene = new Scene(loader.load());
             
             editViewStage = new Stage();
+            //editViewStage.setResizable(false);
             
             if (watchDog != null) {
                 editViewStage.setTitle("MonitoringFX: editing watchdog #" + watchDog.getId());
@@ -97,9 +99,10 @@ public class MonitoringFX extends Application {
             editViewStage.setScene(scene);
             editViewStage.show();
             
-            
             EditViewController controller = loader.getController();
+            controller.setStage(editViewStage);
             controller.setApp(this);
+
             if (watchDog != null) {
                 controller.setWatchDog(watchDog);
             }

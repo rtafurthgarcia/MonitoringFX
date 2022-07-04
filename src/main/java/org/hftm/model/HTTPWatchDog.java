@@ -13,6 +13,7 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 
+import org.hftm.util.RequestType;
 import org.hftm.util.WatchDogType;
 import org.hftm.util.HistoryRecord.ServiceStatus;
 
@@ -23,16 +24,6 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 
 public class HTTPWatchDog extends AbstractWatchDog {
-
-    public enum RequestType {
-        GET,
-        PUT,
-        POST,
-        DELETE,
-        CONNECT,
-        HEAD,
-        OPTIONS
-    }
 
     private ObjectProperty<RequestType> requestType;
     private StringProperty headers;

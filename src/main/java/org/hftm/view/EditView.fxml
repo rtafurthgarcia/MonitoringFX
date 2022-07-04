@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -13,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<TitledPane fx:id="titledPane" animated="false" collapsible="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="320.0" prefWidth="600.0" text="Adding a new watchdog" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.hftm.controller.EditViewController">
+<TitledPane fx:id="titledpane" animated="false" collapsible="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="360.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" text="Adding a new watchdog" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.hftm.controller.EditViewController">
    <font>
       <Font size="16.0" />
    </font>
@@ -22,18 +24,18 @@
          <children>
             <GridPane fx:id="gridpane" vgap="4.0">
               <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="240.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints fx:id="rowconstraints1" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints fx:id="rowconstraints2" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints fx:id="rowconstraints3" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints fx:id="rowconstraints1" maxHeight="1.7976931348623157E308" minHeight="27.0" vgrow="ALWAYS" />
+                  <RowConstraints fx:id="rowconstraints2" maxHeight="1.7976931348623157E308" minHeight="27.0" vgrow="ALWAYS" />
+                  <RowConstraints fx:id="rowconstraints3" minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
                   <Label text="Service" />
@@ -45,23 +47,23 @@
                   <ComboBox fx:id="comboboxType" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <HBox spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                      <children>
-                        <TextField fx:id="textfieldPeriod" prefHeight="27.0" prefWidth="170.0" promptText="15" />
+                        <TextField fx:id="textfieldPeriod" promptText="15" HBox.hgrow="ALWAYS" />
                         <ComboBox fx:id="comboboxPeriod" minWidth="180.0" prefWidth="150.0" />
                      </children>
                   </HBox>
                   <HBox spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                      <children>
-                        <TextField fx:id="textfieldTimeout" promptText="3" />
-                        <ComboBox fx:id="comboboxTimeout" minWidth="180.0" prefHeight="27.0" prefWidth="154.0" />
+                        <TextField fx:id="textfieldTimeout" promptText="3" HBox.hgrow="ALWAYS" />
+                        <ComboBox fx:id="comboboxTimeout" minWidth="180.0" prefWidth="150.0" />
                      </children>
                   </HBox>
                   <TextField fx:id="textfieldRetries" promptText="3" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                   <Label fx:id="labelGeneric1" text="Generic" GridPane.rowIndex="5" />
                   <Label fx:id="labelGeneric2" text="Generic" GridPane.rowIndex="6" />
-                  <TextField fx:id="textfieldGeneric1" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                  <TextField fx:id="textfieldGeneric2" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                   <Label fx:id="labelGeneric3" text="Generic" GridPane.rowIndex="7" />
                   <ComboBox fx:id="comboboxGeneric1" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                  <TextArea fx:id="textareaGeneric1" GridPane.columnIndex="1" GridPane.rowIndex="5" GridPane.vgrow="ALWAYS" />
+                  <TextArea fx:id="textareaGeneric2" GridPane.columnIndex="1" GridPane.rowIndex="6" GridPane.vgrow="ALWAYS" />
                </children>
             </GridPane>
             <ButtonBar prefHeight="40.0" prefWidth="200.0">
@@ -69,6 +71,9 @@
                 <Button mnemonicParsing="false" onAction="#onButtonCancelClicked" text="Cancel" />
                   <Button fx:id="buttonValidate" mnemonicParsing="false" onAction="#onButtonValidateClicked" text="Add" />
               </buttons>
+               <VBox.margin>
+                  <Insets top="5.0" />
+               </VBox.margin>
             </ButtonBar>
          </children>
       </VBox>

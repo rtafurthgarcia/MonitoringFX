@@ -9,13 +9,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
-    <dependencies>
-
-      <dependency>
-        <groupId>com.sun.net.httpserver</groupId>
-        <artifactId>http</artifactId>
-        <version>20070405</version>
-      </dependency>
+    <dependencies>  
       <dependency>
           <groupId>org.openjfx</groupId>
           <artifactId>javafx-controls</artifactId>

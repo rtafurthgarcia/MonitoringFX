@@ -3,9 +3,9 @@ package org.hftm.model;
 import java.io.IOException;
 import java.net.InetAddress;
 
-import org.hftm.model.HistoryRecord.ServiceStatus;
-
 import org.hftm.util.OsDetectionUtil;
+import org.hftm.util.WatchDogType;
+import org.hftm.util.HistoryRecord.ServiceStatus;
 import org.hftm.util.OsDetectionUtil.OperatingSystemType;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -61,7 +61,7 @@ public class PingWatchDog extends AbstractWatchDog {
 
     @Override
     protected void setTypeProperty() {
-        super.type = new SimpleStringProperty("Ping");
+        super.type = new SimpleStringProperty(WatchDogType.PING.toString());
         
     }
 }

@@ -13,7 +13,8 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 
-import org.hftm.model.HistoryRecord.ServiceStatus;
+import org.hftm.util.WatchDogType;
+import org.hftm.util.HistoryRecord.ServiceStatus;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -152,6 +153,6 @@ public class HTTPWatchDog extends AbstractWatchDog {
 
     @Override
     protected void setTypeProperty() {
-        super.type = new SimpleStringProperty("HTTP(S)");
+        super.type = new SimpleStringProperty(WatchDogType.HTTP.toString());
     } 
 }

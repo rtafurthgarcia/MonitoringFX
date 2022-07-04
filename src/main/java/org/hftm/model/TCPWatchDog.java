@@ -7,7 +7,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import org.hftm.model.HistoryRecord.ServiceStatus;
+import org.hftm.util.WatchDogType;
+import org.hftm.util.HistoryRecord.ServiceStatus;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -69,7 +70,7 @@ public class TCPWatchDog extends AbstractWatchDog {
 
     @Override
     protected void setTypeProperty() {
-        super.type = new SimpleStringProperty("TCP");
+        super.type = new SimpleStringProperty(WatchDogType.TCP.toString());
         
     }
 }

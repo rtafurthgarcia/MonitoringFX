@@ -6,9 +6,9 @@ import java.time.format.FormatStyle;
 
 import org.hftm.MonitoringFX;
 import org.hftm.model.AbstractWatchDog;
-import org.hftm.model.HistoryRecord;
-import org.hftm.model.HistoryRecord.ServiceStatus;
+import org.hftm.util.HistoryRecord;
 import org.hftm.util.ImageResources;
+import org.hftm.util.HistoryRecord.ServiceStatus;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;

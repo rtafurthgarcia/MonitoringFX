@@ -3,7 +3,9 @@ package org.hftm.model;
 import java.net.UnknownHostException;
 import java.time.Duration;
 
-import org.hftm.model.HistoryRecord.ServiceStatus;
+import org.hftm.util.DNSRecordType;
+import org.hftm.util.WatchDogType;
+import org.hftm.util.HistoryRecord.ServiceStatus;
 import org.xbill.DNS.*;
 
 import javafx.beans.property.ObjectProperty;
@@ -15,13 +17,13 @@ import javafx.beans.property.SimpleStringProperty;
 public class DNSRecordWatchDog extends AbstractWatchDog {
 
     private ObjectProperty<SimpleResolver> resolver;
-    private IntegerProperty recordType;
+    private ObjectProperty<DNSRecordType> recordType;
 
-    public Integer getRecordType() {
+    public DNSRecordType getRecordType() {
         return recordType.get();
     }
 
-    public void setRecordType(Integer recordType) {
+    public void setRecordType(DNSRecordType recordType) {
         this.recordType.set(recordType);
     }
 
@@ -37,7 +39,7 @@ public class DNSRecordWatchDog extends AbstractWatchDog {
         return resolver;
     }
 
-    public IntegerProperty recordTypeProperty() {
+    public ObjectProperty<DNSRecordType> recordTypeProperty() {
         return recordType;
     }
 
@@ -45,11 +47,11 @@ public class DNSRecordWatchDog extends AbstractWatchDog {
         super(id, service, timeout, period, maxFailures);
 
         this.resolver = new SimpleObjectProperty<>(new SimpleResolver("1.1.1.1"));
-        this.recordType = new SimpleIntegerProperty(Type.ANY);
+        this.recordType = new SimpleObjectProperty<>(DNSRecordType.ANY);
         setTypeProperty();
     }
 
-    public DNSRecordWatchDog(Integer id, String service, Integer recordType, SimpleResolver resolver) throws UnknownHostException {
+    public DNSRecordWatchDog(Integer id, String service, DNSRecordType recordType, SimpleResolver resolver) throws UnknownHostException {
         this(id, service, DEFAULT_TIMEOUT, DEFAULT_PERIOD, DEFAULT_MAX_FAILURE);
 
         this.recordType.set(recordType);
@@ -62,7 +64,7 @@ public class DNSRecordWatchDog extends AbstractWatchDog {
         boolean isReachable = false;
 
         for (Integer count = getMaximumFailureCount(); count > 0; count--) {
-            Lookup lookup = new Lookup(Name.fromString(getService()), getRecordType(), DClass.IN);
+            Lookup lookup = new Lookup(Name.fromString(getService()), getRecordType().code, DClass.IN);
             lookup.setResolver(getResolver());
     
             Record[] records = lookup.run();
@@ -84,7 +86,7 @@ public class DNSRecordWatchDog extends AbstractWatchDog {
 
     @Override
     protected void setTypeProperty() {
-        super.type = new SimpleStringProperty("DNS record");
+        super.type = new SimpleStringProperty(WatchDogType.DNS.toString());
     }
 
 }

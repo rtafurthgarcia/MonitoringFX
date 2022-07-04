@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
+import org.hftm.util.HistoryRecord;
 import org.junit.jupiter.api.Test;
 
 public class TCPWatchDogTests {

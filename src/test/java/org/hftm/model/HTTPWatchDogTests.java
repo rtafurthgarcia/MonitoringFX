@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import org.hftm.util.HistoryRecord;
 import org.junit.jupiter.api.Test;
 
 import javafx.application.Platform;

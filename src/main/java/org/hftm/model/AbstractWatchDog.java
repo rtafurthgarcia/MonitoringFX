@@ -4,7 +4,8 @@ import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.hftm.model.HistoryRecord.ServiceStatus;
+import org.hftm.util.HistoryRecord;
+import org.hftm.util.HistoryRecord.ServiceStatus;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;

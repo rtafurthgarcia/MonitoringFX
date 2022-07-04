@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import org.hftm.controller.EditViewController;
 import org.hftm.controller.MainViewController;
 import org.hftm.model.*;
+import org.hftm.util.DNSRecordType;
 import org.xbill.DNS.*;
 
 import javafx.application.Application;
@@ -43,7 +44,7 @@ public class MonitoringFX extends Application {
         try {
             watchDogs.add(new PingWatchDog(1, "1.1.1.1"));
             watchDogs.add(new HTTPWatchDog(2, "https://hftm.ch", HTTPWatchDog.RequestType.GET, "", ""));
-            watchDogs.add(new DNSRecordWatchDog(3, "hftm.ch", Type.MX, new SimpleResolver("1.1.1.1")));   
+            watchDogs.add(new DNSRecordWatchDog(3, "hftm.ch", DNSRecordType.ANY, new SimpleResolver("1.1.1.1")));   
         } catch (Exception e) {
             //TODO: handle exception
         }
@@ -64,7 +65,6 @@ public class MonitoringFX extends Application {
     public void showMainView() {
         try {
             FXMLLoader loader = new FXMLLoader();
-            //loader.setResources(resources);
             loader.setLocation(MonitoringFX.class.getResource(Paths.get("view", "MainView.fxml").toString()));
 
             // Show the scene containing the root layout.
@@ -100,7 +100,9 @@ public class MonitoringFX extends Application {
             
             EditViewController controller = loader.getController();
             controller.setApp(this);
-            controller.setWatchDog(watchDog);
+            if (watchDog != null) {
+                controller.setWatchDog(watchDog);
+            }
         }
         catch (IOException e) {
             e.printStackTrace();

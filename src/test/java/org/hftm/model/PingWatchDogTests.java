@@ -3,6 +3,8 @@ package org.hftm.model;
 import java.net.UnknownHostException;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.hftm.util.HistoryRecord;
 import org.junit.jupiter.api.Test;
 
 /**

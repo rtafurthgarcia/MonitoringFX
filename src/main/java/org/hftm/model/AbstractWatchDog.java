@@ -142,7 +142,7 @@ public abstract class AbstractWatchDog extends ScheduledService {
         this.service = new SimpleStringProperty(service);
         this.monitoringHistory = new LinkedList<>(); 
         this.uptimeSinceBeginning = new SimpleDoubleProperty(0.0);
-        this.timeout = new SimpleObjectProperty<Duration>(timeout);
+        this.timeout = new SimpleObjectProperty<>(timeout);
 
 
         upCounter = 0;
@@ -172,7 +172,7 @@ public abstract class AbstractWatchDog extends ScheduledService {
         return new Task<Void>() {
             protected Void call() throws Exception {
                 checkServiceAvailability();
-                
+
                 return null;
             }
         };

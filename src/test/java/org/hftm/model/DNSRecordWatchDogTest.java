@@ -10,7 +10,6 @@ import org.hftm.util.HistoryRecord;
 import org.junit.jupiter.api.Test;
 import org.xbill.DNS.SimpleResolver;
 import org.xbill.DNS.TextParseException;
-import org.xbill.DNS.Type;
 
 public class DNSRecordWatchDogTest {
     @Test

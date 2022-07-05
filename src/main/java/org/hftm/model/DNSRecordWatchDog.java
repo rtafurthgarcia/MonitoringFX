@@ -4,13 +4,16 @@ import java.net.UnknownHostException;
 import java.time.Duration;
 
 import org.hftm.util.DNSRecordType;
-import org.hftm.util.WatchDogType;
 import org.hftm.util.HistoryRecord.ServiceStatus;
-import org.xbill.DNS.*;
+import org.hftm.util.WatchDogType;
+import org.xbill.DNS.DClass;
+import org.xbill.DNS.Lookup;
+import org.xbill.DNS.Name;
+import org.xbill.DNS.Record;
+import org.xbill.DNS.SimpleResolver;
+import org.xbill.DNS.TextParseException;
 
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 

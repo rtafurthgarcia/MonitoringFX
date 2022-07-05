@@ -211,7 +211,7 @@ public class MainViewController {
         }
     }
 
-    void onSelectedWatchDog(AbstractWatchDog selectedWatchDog) {
+    public void onSelectedWatchDog(AbstractWatchDog selectedWatchDog) {
         if (selectedWatchDog.getCurrentStatus().equals(ServiceStatus.PAUSED)) {
             imageStartPause.setImage(resources.get("START_LOGO"));
         } else {

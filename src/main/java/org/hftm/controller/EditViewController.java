@@ -101,6 +101,9 @@ public class EditViewController {
 
     DecimalFormat formatter = new DecimalFormat("##");
 
+    final String DEFAULT_MESSAGE = "Please make sure a value has been properly set to your ";
+    final String DEFAULT_FIELDS = "service, timeout, amount of retries and period fields.";
+
     public void setApp(MonitoringFX app) {
         this.app = app;
     }
@@ -312,24 +315,32 @@ public class EditViewController {
     public void onButtonValidateClicked() throws NumberFormatException, UnknownHostException {    
         switch (comboboxType.getSelectionModel().getSelectedItem()) {
             case DNS:
-                if (isNewWatchDog) {
-                    this.watchDog = new DNSRecordWatchDog(
-                        newId, 
-                        textfieldService.getText(), 
-                        getDurationByUnit(Integer.parseInt(textfieldTimeout.getText()), comboboxTimeout.getSelectionModel().getSelectedItem()), 
-                        getDurationByUnit(Integer.parseInt(textfieldPeriod.getText()), comboboxPeriod.getSelectionModel().getSelectedItem()), 
-                        Integer.parseInt(textfieldRetries.getText())
-                    );
-                } else {
-                    this.watchDog.setService(textfieldService.getText());
-                    this.watchDog.setTimeout(getDurationByUnit(Integer.parseInt(textfieldTimeout.getText()), comboboxTimeout.getSelectionModel().getSelectedItem()));
-                    this.watchDog.setPeriod(new javafx.util.Duration(getDurationByUnit(Integer.parseInt(textfieldPeriod.getText()), comboboxPeriod.getSelectionModel().getSelectedItem()).toMillis()));
-                    this.watchDog.setMaximumFailureCount(Integer.parseInt(textfieldRetries.getText()));
+                try {
+                    if (isNewWatchDog) {
+                        this.watchDog = new DNSRecordWatchDog(
+                            newId, 
+                            textfieldService.getText(), 
+                            getDurationByUnit(Integer.parseInt(textfieldTimeout.getText()), comboboxTimeout.getSelectionModel().getSelectedItem()), 
+                            getDurationByUnit(Integer.parseInt(textfieldPeriod.getText()), comboboxPeriod.getSelectionModel().getSelectedItem()), 
+                            Integer.parseInt(textfieldRetries.getText())
+                        );
+                    } else {
+                        this.watchDog.setService(textfieldService.getText());
+                        this.watchDog.setTimeout(getDurationByUnit(Integer.parseInt(textfieldTimeout.getText()), comboboxTimeout.getSelectionModel().getSelectedItem()));
+                        this.watchDog.setPeriod(new javafx.util.Duration(getDurationByUnit(Integer.parseInt(textfieldPeriod.getText()), comboboxPeriod.getSelectionModel().getSelectedItem()).toMillis()));
+                        this.watchDog.setMaximumFailureCount(Integer.parseInt(textfieldRetries.getText()));
+                    }
+                    
+                } catch (Exception e) {
+                    alertUserOfMissingValues(DEFAULT_FIELDS);
+                    return;
                 }
                 
                 DNSRecordWatchDog dnsRecordWatchDog = (DNSRecordWatchDog) this.watchDog;
                 dnsRecordWatchDog.setRecordType((DNSRecordType)comboboxGeneric1.getSelectionModel().getSelectedItem());
-                dnsRecordWatchDog.setResolver(new SimpleResolver(textareaGeneric1.getText()));
+                if (! textareaGeneric1.getText().isEmpty()) {
+                    dnsRecordWatchDog.setResolver(new SimpleResolver(textareaGeneric1.getText()));
+                }
 
                 if (isNewWatchDog) {
                     this.app.getWatchDogs().add(dnsRecordWatchDog);
@@ -339,19 +350,24 @@ public class EditViewController {
                 break;
         
             case PING:
-                if (isNewWatchDog) {
-                    this.watchDog = new PingWatchDog(
-                        newId, 
-                        textfieldService.getText(), 
-                        getDurationByUnit(Integer.valueOf(textfieldTimeout.getText()), comboboxTimeout.getSelectionModel().getSelectedItem()), 
-                        getDurationByUnit(Integer.valueOf(textfieldPeriod.getText()), comboboxPeriod.getSelectionModel().getSelectedItem()), 
-                        Integer.valueOf(textfieldRetries.getText())
-                    );
-                } else {
+                try {
+                    if (isNewWatchDog) {
+                        this.watchDog = new PingWatchDog(
+                            newId, 
+                            textfieldService.getText(), 
+                            getDurationByUnit(Integer.valueOf(textfieldTimeout.getText()), comboboxTimeout.getSelectionModel().getSelectedItem()), 
+                            getDurationByUnit(Integer.valueOf(textfieldPeriod.getText()), comboboxPeriod.getSelectionModel().getSelectedItem()), 
+                            Integer.valueOf(textfieldRetries.getText())
+                        );
+                    } else {
                         this.watchDog.setService(textfieldService.getText());
                         this.watchDog.setTimeout(getDurationByUnit(Integer.valueOf(textfieldTimeout.getText()), comboboxTimeout.getSelectionModel().getSelectedItem()));
                         this.watchDog.setPeriod(new javafx.util.Duration(getDurationByUnit(Integer.valueOf(textfieldPeriod.getText()), comboboxPeriod.getSelectionModel().getSelectedItem()).toMillis()));
                         this.watchDog.setMaximumFailureCount(Integer.valueOf(textfieldRetries.getText()));
+                    }            
+                } catch (Exception e) {
+                    alertUserOfMissingValues(DEFAULT_FIELDS);
+                    return;
                 }
 
                 if (isNewWatchDog) {
@@ -362,24 +378,36 @@ public class EditViewController {
                 break;
 
             case HTTP:
-                if (isNewWatchDog) {
-                    this.watchDog = new HTTPWatchDog(
-                        newId, 
-                        textfieldService.getText(), 
-                        getDurationByUnit(Integer.parseInt(textfieldTimeout.getText()), comboboxTimeout.getSelectionModel().getSelectedItem()), 
-                        getDurationByUnit(Integer.parseInt(textfieldPeriod.getText()), comboboxPeriod.getSelectionModel().getSelectedItem()), 
-                        Integer.parseInt(textfieldRetries.getText())
-                    );
-                } else {
+                try {
+                    if (isNewWatchDog) {
+                        this.watchDog = new HTTPWatchDog(
+                            newId, 
+                            textfieldService.getText(), 
+                            getDurationByUnit(Integer.parseInt(textfieldTimeout.getText()), comboboxTimeout.getSelectionModel().getSelectedItem()), 
+                            getDurationByUnit(Integer.parseInt(textfieldPeriod.getText()), comboboxPeriod.getSelectionModel().getSelectedItem()), 
+                            Integer.parseInt(textfieldRetries.getText())
+                        );
+                    } else {
                         this.watchDog.setService(textfieldService.getText());
                         this.watchDog.setTimeout(getDurationByUnit(Integer.parseInt(textfieldTimeout.getText()), comboboxTimeout.getSelectionModel().getSelectedItem()));
                         this.watchDog.setPeriod(new javafx.util.Duration(getDurationByUnit(Integer.parseInt(textfieldPeriod.getText()), comboboxPeriod.getSelectionModel().getSelectedItem()).toMillis()));
                         this.watchDog.setMaximumFailureCount(Integer.parseInt(textfieldRetries.getText()));
+                    }
+                } catch (Exception e) {
+                    alertUserOfMissingValues(DEFAULT_FIELDS);
+                    return;
                 }
 
                 HTTPWatchDog httpWatchDog = (HTTPWatchDog) this.watchDog;
-                httpWatchDog.setBody(textareaGeneric1.getText());
-                httpWatchDog.setHeaders(textareaGeneric2.getText());
+
+                if (! textareaGeneric1.getText().isEmpty()) {
+                    httpWatchDog.setBody(textareaGeneric1.getText());
+                }
+
+                if (! textareaGeneric2.getText().isEmpty()) {
+                    httpWatchDog.setHeaders(textareaGeneric2.getText());
+                }
+
                 httpWatchDog.setRequestType((RequestType)comboboxGeneric1.getSelectionModel().getSelectedItem());
 
                 if (isNewWatchDog) {
@@ -390,21 +418,33 @@ public class EditViewController {
                 break;
         
             case TCP:
-                if (isNewWatchDog) {
-                    this.watchDog = new TCPWatchDog(
-                        newId, 
-                        textfieldService.getText(),
-                        Integer.parseInt(textareaGeneric1.getText()) 
-                    );
-                } else {
+                try {
+                    if (isNewWatchDog) {
+                        this.watchDog = new TCPWatchDog(
+                            newId, 
+                            textfieldService.getText(),
+                            Integer.parseInt(textareaGeneric1.getText()) 
+                        );
+                    } else {
                         this.watchDog.setService(textfieldService.getText());
                         this.watchDog.setTimeout(getDurationByUnit(Integer.parseInt(textfieldTimeout.getText()), comboboxTimeout.getSelectionModel().getSelectedItem()));
                         this.watchDog.setPeriod(new javafx.util.Duration(getDurationByUnit(Integer.valueOf(textfieldPeriod.getText()), comboboxPeriod.getSelectionModel().getSelectedItem()).toMillis()));
                         this.watchDog.setMaximumFailureCount(Integer.parseInt(textfieldRetries.getText()));
+                    }
+                    
+                } catch (Exception e) {
+                    alertUserOfMissingValues(DEFAULT_FIELDS);
+                    return;
                 }
 
                 TCPWatchDog tcpWatchDog = (TCPWatchDog) this.watchDog;
-                tcpWatchDog.setPort(Integer.parseInt(textareaGeneric1.getText()));
+                try {
+                    tcpWatchDog.setPort(Integer.parseInt(textareaGeneric1.getText()));
+                    
+                } catch (Exception e) {
+                    alertUserOfMissingValues("Port field.");
+                    return;
+                }
 
                 if (isNewWatchDog) {
                     this.app.getWatchDogs().add(this.watchDog);
@@ -425,6 +465,20 @@ public class EditViewController {
         }
 
         this.stage.close();
+    }
+
+    private void alertUserOfMissingValues(String fields) {
+        Alert alert = new Alert(AlertType.WARNING);
+        alert.initOwner(app.getPrimaryStage());
+        alert.setTitle("Fields not properly filled");
+        alert.setHeaderText("Values not set");
+        alert.setContentText(DEFAULT_MESSAGE + DEFAULT_FIELDS);
+
+        if (! fields.isEmpty()) {
+            alert.setHeaderText(DEFAULT_MESSAGE + fields);
+        }
+
+        alert.showAndWait();
     }
 
     @FXML

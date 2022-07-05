@@ -10,7 +10,7 @@ public class OsDetectionUtil {
     };
 
     public static OperatingSystemType getOperatingSystemType() {
-        String osName = System.getProperty("os.name").toLowerCase().substring(1, 3);
+        String osName = System.getProperty("os.name").toLowerCase().substring(0, 3);
 
         if (osName.equals("win")) {
             return OperatingSystemType.WINDOWS;
@@ -18,5 +18,5 @@ public class OsDetectionUtil {
             return OperatingSystemType.UNIX;
         }
     }
-    
+
 }

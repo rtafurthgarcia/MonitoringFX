@@ -68,7 +68,7 @@ public class MonitoringFX extends Application {
     public void showMainView() {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(MonitoringFX.class.getResource(Paths.get("view", "MainView.fxml").toString()));
+            loader.setLocation(MonitoringFX.class.getResource("view/MainView.fxml"));
 
             // Show the scene containing the root layout.
             Scene scene = new Scene(loader.load());
@@ -87,7 +87,7 @@ public class MonitoringFX extends Application {
     public void showEditView(AbstractWatchDog watchDog) {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(MonitoringFX.class.getResource(Paths.get("view", "EditView.fxml").toString()));
+            loader.setLocation(MonitoringFX.class.getResource("view/EditView.fxml"));
             Scene scene = new Scene(loader.load(), 600, 270);
             
             editViewStage = new Stage();

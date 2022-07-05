@@ -11,10 +11,8 @@ public class ImageResources {
 
     HashMap<String, String> images = new HashMap<String, String>();
 
-    //public static final String DIRECTORY_PATH = Paths.get("..", "view", "res").toString();  
-
     public Image get(String key) {
-        String path = MonitoringFX.class.getResource(Paths.get("view", "res", images.get(key)).toString()).toString();
+        String path = MonitoringFX.class.getResource("view/res/"+ images.get(key)).toString();
         return new Image(path);
     }
 
